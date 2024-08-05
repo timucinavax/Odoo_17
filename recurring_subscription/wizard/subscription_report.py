@@ -12,9 +12,9 @@ except ImportError:
     import xlsxwriter
 
 
-class SubscriptionReportWizard(models.TransientModel):
-    _name = 'subscription.report.wizard'
-    _description = 'Subscription Report Wizard'
+class SubscriptionReport(models.TransientModel):
+    _name = 'subscription.report'
+    _description = 'Subscription Report'
 
     """ Wizard for print report of Subscription with or without filter """
 
@@ -44,19 +44,22 @@ class SubscriptionReportWizard(models.TransientModel):
         query = 'SELECT * from recurring_subscription'
         params = []
         if self.subscription_ids:
-            query += ' WHERE id in %s',
+            query += ' WHERE id in %s'
             params.append(tuple(self.subscription_ids.ids))
-        else:
+        elif self.frequency:
             self.subscription_ids = False
             if self.frequency == 'daily':
                 query += ' WHERE due_date = %s'
                 params.append(date.today())
             elif self.frequency == 'weekly':
-                query += ' WHERE EXTRACT(WEEK from due_date) = EXTRACT(WEEK from CURRENT_DATE)'
+                query += (' WHERE EXTRACT(WEEK from due_date) ='
+                          ' EXTRACT(WEEK from CURRENT_DATE)')
             elif self.frequency == 'monthly':
-                query += ' WHERE EXTRACT(MONTH from due_date) = EXTRACT(MONTH from CURRENT_DATE)'
+                query += (' WHERE EXTRACT(MONTH from due_date) ='
+                          ' EXTRACT(MONTH from CURRENT_DATE)')
             elif self.frequency == 'yearly':
-                query += ' WHERE EXTRACT(YEAR from due_date) = EXTRACT(YEAR from CURRENT_DATE)'
+                query += (' WHERE EXTRACT(YEAR from due_date) ='
+                          ' EXTRACT(YEAR from CURRENT_DATE)')
             elif self.frequency == 'date':
                 if self.start_date and not self.end_date:
                     query += ' WHERE due_date >= %s'
@@ -131,15 +134,16 @@ class SubscriptionReportWizard(models.TransientModel):
 
     def action_print(self):
         # create and print report in xlsx format
-        subscription = self.subscription_ids
         result = self._get_subscriptions()
-        for rec in result:
-            subscription += self.subscription_ids.browse(rec['id'])
+        subscription = self.subscription_ids
+        if not subscription:
+            for rec in result:
+                subscription += self.subscription_ids.browse(rec['id'])
         data = subscription.read()
         return {
             'type': 'ir.actions.report',
             'data': {
-                'model': 'subscription.report.wizard',
+                'model': 'subscription.report',
                 'options': json.dumps(data, default=date_utils.json_default),
                 'output_format': 'xlsx',
                 'report_name': 'Subscription Report',
@@ -160,7 +164,9 @@ class SubscriptionFormReport(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        docs = self.env['recurring.subscription'].browse(docids)
+        docs = False
+        if self.env['recurring.subscription'].search([('id', 'in', docids)]):
+            docs = self.env['recurring.subscription'].browse(docids)
         return {
             'doc_ids': docids,
             'doc_model': 'recurring.subscription',

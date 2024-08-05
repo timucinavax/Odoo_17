@@ -10,9 +10,9 @@ except ImportError:
     import xlsxwriter
 
 
-class SubscriptionReportWizard(models.TransientModel):
-    _name = 'credit.report.wizard'
-    _description = 'Credit Report Wizard'
+class SubscriptionReport(models.TransientModel):
+    _name = 'credit.report'
+    _description = 'Credit Report'
 
     """ Wizard for printing report of credits with or without filter """
 
@@ -25,46 +25,21 @@ class SubscriptionReportWizard(models.TransientModel):
 
     def _get_credits(self):
         # compute credits based on selected subscriptions
-        try:
-            with self.env.cr.savepoint(flush=False):
-                query = 'SELECT * from recurring_subscription_credit'
-                params = []
-                if self.subscription_ids:
-                    query += ' WHERE subscription_id in %s'
-                    params.append(tuple(self.subscription_ids.ids))
-                if self.state and self.subscription_ids:
-                    query += ' AND state = %s'
-                    params.append(self.state)
-                elif self.state:
-                    query += ' WHERE state = %s'
-                    params.append(self.state)
-                self.env.cr.execute(query, params)
-                credit = self.env['recurring.subscription.credit']
-                for rec in self.env.cr.dictfetchall():
-                    credit += self.env['recurring.subscription.credit'].browse(rec['id'])
-        except OperationalError as e:
-            if e.pgcode == '55P03':
-                return
-            raise e
-        return credit
-
-    def action_print(self):
-        # create and print report in xlsx format
-        subscription_credits = self.subscription_ids.credit_ids
-        credit = self._get_credits()
-        for rec in credit:
-            subscription_credits += self.subscription_ids.credit_ids.browse(rec['id'])
-        data = credit.read()
-        return {
-            'type': 'ir.actions.report',
-            'data': {
-                'model': 'credit.report.wizard',
-                'options': json.dumps(data, default=date_utils.json_default),
-                'output_format': 'xlsx',
-                'report_name': 'Credit Report',
-            },
-            'report_type': 'xlsx'
-        }
+        query = 'SELECT * from recurring_subscription_credit'
+        params = []
+        if self.subscription_ids:
+            query += ' WHERE subscription_id in %s'
+            params.append(tuple(self.subscription_ids.ids))
+        if self.state and self.subscription_ids:
+            query += ' AND state = %s'
+            params.append(self.state)
+        elif self.state:
+            query += ' WHERE state = %s'
+            params.append(self.state)
+        self.env.cr.execute(query, params)
+        result = self.env.cr.dictfetchall()
+        print('get', result)
+        return result
 
     def get_xlsx_report(self, data, response):
         # write data to xlsx file
@@ -107,9 +82,8 @@ class SubscriptionReportWizard(models.TransientModel):
         row = 3
         col = 0
         for line in data:
-            # sheet.write(row, col, line['sl_no'], cell_format)
-            print(line)
-            sheet.write(row, col + 1, row-2, cell_format)
+            sheet.write(row, col, row-2, cell_format)
+            sheet.write(row, col + 1, line.get('subscription_id')[1], cell_format)
             sheet.write(row, col + 2, line.get('partner_id')[1], cell_format)
             sheet.write(row, col + 3, line.get('credit_amount'), cell_format)
             sheet.write(row, col + 4, line.get('amount_pending'), cell_format)
@@ -121,4 +95,46 @@ class SubscriptionReportWizard(models.TransientModel):
         output.seek(0)
         response.stream.write(output.read())
         output.close()
+
+    def action_print(self):
+        # create and print report in xlsx format
+        result = self._get_credits()
+        credit = self.subscription_ids.credit_ids
+        if not credit:
+            for rec in result:
+                credit += self.env['recurring.subscription.credit'].browse(
+                    rec['id'])
+        data = credit.read()
+        return {
+            'type': 'ir.actions.report',
+            'data': {
+                'model': 'credit.report',
+                'options': json.dumps(data, default=date_utils.json_default),
+                'output_format': 'xlsx',
+                'report_name': 'Credit Report',
+            },
+            'report_type': 'xlsx'
+        }
+
+    def action_report_credit(self):
+        result = self._get_credits()
+        ids = [rec.get('id') for rec in result]
+        return (self.env.ref(
+            'recurring_subscription.action_report_credit').report_action(ids, None))
+
+
+class CreditFormReport(models.AbstractModel):
+    _name = "report.recurring_subscription.report_credit"
+
+    @api.model
+    def _get_report_values(self, docids, data=None):
+        docs = False
+        if self.env['recurring.subscription.credit'].search([('id', 'in', docids)]):
+            docs = self.env['recurring.subscription.credit'].browse(docids)
+        return {
+            'doc_ids': docids,
+            'doc_model': 'recurring.subscription',
+            'docs': docs,
+            'data': data
+        }
 

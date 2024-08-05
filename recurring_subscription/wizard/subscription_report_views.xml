@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="subscription_report_wizard_view_form" model="ir.ui.view">
-        <field name="name">subscription.report.wizard.form</field>
-        <field name="model">subscription.report.wizard</field>
+    <record id="subscription_report_view_form" model="ir.ui.view">
+        <field name="name">subscription.report.form</field>
+        <field name="model">subscription.report</field>
         <field name="arch" type="xml">
             <form>
                 <group>
@@ -31,12 +31,12 @@
             </form>
         </field>
     </record>
-    <record id="action_subscription_report_wizard"
+    <record id="action_subscription_report"
             model="ir.actions.act_window">
         <field name="name">Subscription Report</field>
-        <field name="res_model">subscription.report.wizard</field>
+        <field name="res_model">subscription.report</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="subscription_report_wizard_view_form"/>
+        <field name="view_id" ref="subscription_report_view_form"/>
         <field name="target">new</field>
     </record>
 </odoo>

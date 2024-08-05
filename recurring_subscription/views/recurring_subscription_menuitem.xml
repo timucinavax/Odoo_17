@@ -28,11 +28,11 @@
     <menuitem id="recurring_subscription_report"
               name="Subscription"
               parent="menu_report"
-              action="action_subscription_report_wizard"/>
+              action="action_subscription_report"/>
     <menuitem id="subscription_credit_report"
               name="Credit"
               parent="menu_report"
-              action="action_credit_report_wizard"/>
+              action="action_credit_report"/>
     <menuitem id="menu_billing_schedule"
               action="action_billing_schedule"
               parent="menu_configuration"/>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="credit_report_wizard_view_form" model="ir.ui.view">
-        <field name="name">credit.report.wizard.form</field>
-        <field name="model">credit.report.wizard</field>
+    <record id="credit_report_view_form" model="ir.ui.view">
+        <field name="name">credit.report.form</field>
+        <field name="model">credit.report</field>
         <field name="arch" type="xml">
             <form>
                 <group>
@@ -12,9 +12,9 @@
                     </group>
                 </group>
                 <footer>
-                    <button name="%(recurring_subscription.action_report_credit)d"
+                    <button name="action_report_credit"
                             string="PDF"
-                            type="action"
+                            type="object"
                             class="btn-primary"/>
                     <button name="action_print"
                             string="XLSX"
@@ -25,11 +25,11 @@
             </form>
         </field>
     </record>
-    <record id="action_credit_report_wizard" model="ir.actions.act_window">
+    <record id="action_credit_report" model="ir.actions.act_window">
         <field name="name">Credit Report</field>
-        <field name="res_model">credit.report.wizard</field>
+        <field name="res_model">credit.report</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="credit_report_wizard_view_form"/>
+        <field name="view_id" ref="credit_report_view_form"/>
         <field name="target">new</field>
     </record>
 </odoo>

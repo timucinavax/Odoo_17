@@ -65,52 +65,48 @@
         <!-- Template for Subscription credit report -->
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
-                <t t-foreach="docs" t-as="doc">
-                    <div class="page">
-                        <div class="oe_structure"/>
-                        <h2>
-                            <span>
-                                <center>Subscription Credit Report</center>
-                            </span>
-                        </h2>
-                        <table class="table table-sm o_main_table table-borderless mt-4">
-                            <thead style="display: table-row-group">
-                                <tr>
-                                    <th class="text-start">SL.No</th>
-                                    <th class="text-start">Subscription</th>
-                                    <th class="text-start">Customer</th>
-                                    <th class="text-start">Amount Applied</th>
-                                    <th class="text-start">Amount Pending</th>
-                                    <th class="text-start">State</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-set="credits"
-                                   t-value="doc.credit_ids.with_context(lang=doc.create_uid.lang)"/>
-                                <tr t-foreach="credits" t-as="credit">
-                                    <td>
-                                        <span t-esc="credit_index + 1"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="credit.subscription_id"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="credit.partner_id"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="credit.credit_amount"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="credit.amount_pending"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="credit.state"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </t>
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>
+                        <span>
+                            <center>Subscription Credit Report</center>
+                        </span>
+                    </h2>
+                    <table class="table table-sm o_main_table table-borderless mt-4">
+                        <thead style="display: table-row-group">
+                            <tr>
+                                <th class="text-start">SL.No</th>
+                                <th class="text-start">Subscription</th>
+                                <th class="text-start">Customer</th>
+                                <th class="text-start">Amount Applied</th>
+                                <th class="text-start">Amount Pending</th>
+                                <th class="text-start">State</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="credit">
+                                <td>
+                                    <span t-esc="credit_index + 1"/>
+                                </td>
+                                <td>
+                                    <span t-field="credit.subscription_id"/>
+                                </td>
+                                <td>
+                                    <span t-field="credit.partner_id"/>
+                                </td>
+                                <td>
+                                    <span t-field="credit.credit_amount"/>
+                                </td>
+                                <td>
+                                    <span t-field="credit.amount_pending"/>
+                                </td>
+                                <td>
+                                    <span t-field="credit.state"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </t>
         </t>
     </template>
