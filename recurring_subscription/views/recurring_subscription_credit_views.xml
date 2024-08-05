@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="recurring_subscription_credit_view_tree" model="ir.ui.view">
+        <field name="name">recurring.subscription.credit.tree</field>
+        <field name="model">recurring.subscription.credit</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="subscription_id"/>
+                <field name="partner_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="company_id"/>
+                <field name="credit_amount"/>
+                <field name="state"
+                       decoration-muted="state == 'pending'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-primary="state == 'first_approved'"
+                       decoration-success="state == 'fully_approved'"
+                       decoration-danger="state == 'rejected'"
+                       widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="recurring_subscription_credit_view_search" model="ir.ui.view">
+        <field name="name">recurring.subscription.credit.search</field>
+        <field name="model">recurring.subscription.credit</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="My Credits" name="my_credit"
+                        domain="[('create_uid', '=', uid)]"/>
+                <field name="subscription_id"/>
+                <field name="partner_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="company_id"/>
+                <field name="credit_amount"/>
+                <field name="state"
+                       decoration-muted="state == 'pending'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-primary="state == 'first_approved'"
+                       decoration-success="state == 'fully_approved'"
+                       decoration-danger="state == 'rejected'"
+                       widget="badge"/>
+            </search>
+        </field>
+    </record>
+    <record id="recurring_subscription_credit_view_form" model="ir.ui.view">
+        <field name="name">recurring.subscription.credit.form</field>
+        <field name="model">recurring.subscription.credit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="subscription_id"/>
+                            <field name="establishment"/>
+                            <field name="partner_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="credit_amount" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="due_date"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="action_recurring_subscription_credit"
+            model="ir.actions.act_window">
+        <field name="name">Subscription Credits</field>
+        <field name="res_model">recurring.subscription.credit</field>
+        <field name="context">{"search_default_my_credit":1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first credit transaction...!
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.module.category" id="subscription">
+        <field name="name">Subscription</field>
+        <field name="description">User access level Subscription</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="group_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="comment">Subscription User</field>
+        <field name="category_id" ref="subscription"/>
+        <field name="implied_ids" eval="[(4,ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+    <record id="group_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">Subscription Manager</field>
+        <field name="category_id" ref="subscription"/>
+        <field name="users" eval="[(4,ref('base.user_admin'))]"/>
+    </record>
+</odoo>

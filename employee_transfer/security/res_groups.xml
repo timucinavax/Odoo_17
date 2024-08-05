@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+<!--  Group Category  -->
+    <record model="ir.module.category" id="employee_transfer">
+        <field name="name">Employee Transfer</field>
+        <field name="description">User access level Employee Transfer</field>
+        <field name="sequence">1</field>
+    </record>
+    <!-- User group -->
+    <record id="employee_transfer_user_access" model="res.groups">
+        <field name="name">User</field>
+        <field name="comment">Employee Transfer User</field>
+        <field name="category_id" ref="employee_transfer"/>
+        <field name="users" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <!-- Manager user group -->
+    <record id="employee_transfer_manager_access" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">Employee Transfer Manager</field>
+        <field name="category_id" ref="employee_transfer"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+</odoo>

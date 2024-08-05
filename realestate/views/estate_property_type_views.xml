@@ -1,0 +1,48 @@
+<odoo>
+    <data>
+        <record id="property_types_action" model="ir.actions.act_window">
+            <field name="name">Property Types</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate.property.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="property_types_form" model="ir.ui.view">
+            <field name="name">Type form view</field>
+            <field name="model">estate.property.type</field>
+            <field name="arch" type="xml">
+                <form string="Ads">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="property_types_tree" model="ir.ui.view">
+            <field name="name">Type tree view</field>
+            <field name="model">estate.property.type</field>
+            <field name="arch" type="xml">
+                <tree string="Properties">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="property_types_search" model="ir.ui.view">
+            <field name="name">Type search view</field>
+            <field name="model">estate.property.type</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                     <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <menuitem id="test_menu_root" name="Real Estate">
+            <menuitem id="configuration_menu" name="Configuration">
+                <menuitem id="property_types_menu_action" action="property_types_action"/>
+            </menuitem>
+        </menuitem>
+    </data>
+</odoo>

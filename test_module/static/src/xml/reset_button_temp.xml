@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-inherit-id="test_module.Counter" t-inherit-mode="extension">
+        <xpath expr="//button[@t-on-click='decrement']" position="after">
+            <button class="btn-primary" t-on-click="reset">Reset</button>
+        </xpath>
+    </t>
+</templates>

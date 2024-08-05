@@ -1,0 +1,13 @@
+<data>
+   <record id="seq_hospital_op_ticket" model="ir.sequence">
+       <field name="name">Patient Sequence</field>
+       <field name="code">hospital.op.ticket</field>
+       <field name="prefix">OP</field>
+       <field name="padding">5</field>
+   </record>
+    <record id="seq_hospital_op_token" model="ir.sequence">
+       <field name="name">Token Sequence</field>
+       <field name="code">hospital.op.token</field>
+       <field name="padding">3</field>
+   </record>
+</data>

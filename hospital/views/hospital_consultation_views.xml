@@ -1,0 +1,86 @@
+<odoo>
+    <data>
+        <record id="consultation_menu_action" model="ir.actions.act_window">
+            <field name="name">Consultation</field>
+            <field name="res_model">hospital.consultation</field>
+            <field name="view_mode">tree,form,kanban</field>
+        </record>
+        <record id="consultation_form_view" model="ir.ui.view">
+            <field name="name">Consultation Form</field>
+            <field name="model">hospital.consultation</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="seq_no"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="token_id"/>
+                            <field name="date"/>
+                            <field name="doctor_id"/>
+                        </group>
+                        <group>
+                            <field name="patient_id"/>
+                            <field name="patient_age"/>
+                            <field name="blood_group"/>
+                            <field name="height"/>
+                            <field name="weight"/>
+                        </group>
+                        <notebook>
+                            <page string="Remarks">
+                                <field name="initial_diagnosis"/>
+                                <field name="final_diagnosis"/>
+                                <field name="remarks"/>
+                            </page>
+                        <page  string="Medicines">
+
+                        </page>
+                            <page string="Tests">
+
+                            </page>
+                    </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="consultation_form_tree" model="ir.ui.view">
+            <field name="name">Consultation Form</field>
+            <field name="model">hospital.consultation</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="seq_no"/>
+                    <field name="token_id"/>
+                    <field name="doctor_id"/>
+                    <field name="patient_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="consultation_form_kanban" model="ir.ui.view">
+            <field name="name">Consultation Kanban</field>
+            <field name="model">hospital.consultation</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1" quick_create="false">
+                    <field name="date"/>
+                    <field name="seq_no"/>
+                    <field name="token_id"/>
+                    <field name="doctor_id"/>
+                    <field name="patient_id"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click">
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="token_id"/>
+                                    </strong>
+
+                                </div>
+                            </div></t></templates>
+                </kanban>
+            </field>
+        </record>
+        <menuitem id="view_consultation_menu" action="consultation_menu_action" parent="menu_hospital_root" sequence="1"/>
+    </data>
+</odoo>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="material_request_view_form" model="ir.ui.view">
+        <field name="name">material.request.form</field>
+        <field name="model">material.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" type="object"
+                            invisible="state != 'draft'" string="Submit"
+                            groups="material_request.material_req_user_access"
+                            class="oe_highlight"/>
+                    <button name="action_first_approve" type="object"
+                            invisible="state != 'submit'" string="Approve"
+                            class="oe_highlight"
+                            groups="material_request.material_req_manager_access,material_request.material_req_head_access"/>
+                    <button name="action_second_approve" type="object"
+                            invisible="state != 'first_approve'"
+                            string="Approve"
+                            class="oe_highlight"
+                            groups="material_request.material_req_head_access"/>
+                    <button name="action_create_rfq" type="object"
+                            invisible="rfq_sent or not is_rfq or state not in 'first_approve,fully_approve'"
+                            groups="material_request.material_req_manager_access,
+                            material_request.material_req_head_access"
+                            class="oe_highlight"
+                            string="Create RFQ"/>
+                    <button name="action_create_internal" type="object"
+                            invisible="transfer_created or not is_internal or state not in 'first_approve,fully_approve'"
+                            groups="material_request.material_req_manager_access,
+                            material_request.material_req_head_access"
+                            class="oe_highlight"
+                            string="Create Transfer"/>
+                    <button name="action_reject" type="object"
+                            invisible="state in 'draft,rejected'"
+                            string="Reject"
+                            groups="material_request.material_req_head_access"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="manager_id"
+                                   groups="material_request.material_req_head_access"/>
+                            <field name="manager_id"
+                                   readonly="1"
+                                   groups="material_request.material_req_manager_access"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="is_rfq" invisible="1"/>
+                            <field name="is_internal" invisible="1"/>
+                            <field name="transfer_created" invisible="1"/>
+                            <field name="rfq_sent" invisible="1"/>
+                            <field name="submitted" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Order Lines">
+                            <field name="order_line_ids" readonly="rfq_sent or transfer_created">
+                                <tree editable="bottom">
+                                    <control>
+                                        <create name="add_product_control"
+                                                string="Add a product"/>
+                                    </control>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                    <field name="type"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="material_request_view_tree" model="ir.ui.view">
+        <field name="name">material.request.tree</field>
+        <field name="model">material.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="state" widget="badge"
+                       decoration-muted="state == 'draft'"
+                       decoration-info="state == 'submit'"
+                       decoration-primary="state == 'first_approve'"
+                       decoration-success="state == 'fully_approve'"
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_material_request" model="ir.actions.act_window">
+        <field name="name">Requests</field>
+        <field name="res_model">material.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="material_request_root" name="Material Request">
+        <menuitem id="menu_material_request" action="action_material_request"/>
+    </menuitem>
+</odoo>

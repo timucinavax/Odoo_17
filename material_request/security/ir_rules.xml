@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Own company documents-->
+    <record id="material_req_company_rule" model="ir.rule">
+        <field name="name">Material Request selected company</field>
+        <field name="model_id" ref="model_material_request"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]
+        </field>
+    </record>
+    <!--Own requests manager records-->
+    <record id="material_req_record_rule" model="ir.rule">
+        <field name="name">Material Request Logged Manager</field>
+        <field name="model_id" ref="model_material_request"/>
+        <field name="groups" eval="[
+        (4,ref('material_request.material_req_manager_access'))]"/>
+        <field name="domain_force">['|',('manager_id.user_id','=',user.id),
+            ('manager_id','=',False)]
+        </field>
+    </record>
+    <record id="material_req_user_record_rule" model="ir.rule">
+        <field name="name">Material Request Logged User</field>
+        <field name="model_id" ref="model_material_request"/>
+        <field name="groups" eval="[
+        (4,ref('material_request.material_req_user_access'))]"/>
+        <field name="domain_force">['|',('user_id.user_id','=',user.id),
+            ('user_id','=',False)]
+        </field>
+    </record>
+</odoo>

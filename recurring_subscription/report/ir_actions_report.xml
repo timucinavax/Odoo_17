@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_subscription" model="ir.actions.report">
+        <field name="name">Subscription Report</field>
+        <field name="model">subscription.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">recurring_subscription.report_subscription</field>
+        <field name="report_file">recurring_subscription.report_subscription</field>
+        <field name="print_report_name">('Recurring Subscription Report')</field>
+        <field name="binding_model_id" ref="model_subscription_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+    <record id="action_report_credit" model="ir.actions.report">
+        <field name="name">Credit Report</field>
+        <field name="model">credit.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">recurring_subscription.report_credit</field>
+        <field name="report_file">recurring_subscription.report_credit</field>
+        <field name="print_report_name">('Subscription Credit Report')</field>
+        <field name="binding_model_id" ref="model_credit_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

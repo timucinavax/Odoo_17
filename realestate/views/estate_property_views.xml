@@ -1,0 +1,102 @@
+<odoo>
+    <data>
+        <record id="test_model_action" model="ir.actions.act_window">
+            <field name="name">Advertisement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate.property</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="properties_form" model="ir.ui.view">
+            <field name="name">Ad form view</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <form string="Ads">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="property_tag_ids" widget="many2many_tags"/>
+                                <field name="property_type_id"/>
+                                <field name="postcode" string="Postcode"/>
+                                <field name="date_availability"/>
+                            </group>
+                            <group>
+                                <field name="expected_price"/>
+                                <field name="best_price"/>
+                                <field name="selling_price"/>
+                            </group>
+                            <notebook>
+                                <page string="Descriptions">
+                                    <group>
+                                        <field name="description"/>
+                                        <field name="bedrooms"/>
+                                        <field name="living_area"/>
+                                        <field name="facades"/>
+                                        <field name="garage"/>
+                                        <field name="garden"/>
+                                        <field name="garden_area"/>
+                                        <field name="garden_orientation"/>
+                                        <field name="total_area"/>
+                                        <field name="active_status"/>
+                                        <field name="state_status"/>
+                                    </group>
+
+                                </page>
+                                <page string="Other Info">
+                                    <group>
+                                        <field name="seller"/>
+                                        <field name="buyer"/>
+                                    </group>
+                                </page>
+                                <page string="Offers">
+                                    <group>
+                                        <field name="offer_ids"/>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="properties_tree" model="ir.ui.view">
+            <field name="name">Ad tree view</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <tree string="Properties">
+                    <field name="name"/>
+                    <field name="property_tag_ids" widget="many2many_tags"/>
+                    <field name="property_type_id"/>
+                    <field name="description"/>
+                    <field name="date_availability"/>
+                    <field name="selling_price"/>
+                    <field name="active_status"/>
+                </tree>
+            </field>
+        </record>
+        <record id="properties_search" model="ir.ui.view">
+            <field name="name">Ad search view</field>
+            <field name="model">estate.property</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <filter name="New or Offer received" domain="[('state_status', 'in', ('new','offerreceived'))]"/>
+                    <filter string="Postcode" name="Postcode" context="{'group_by':'postcode'}"/>
+                    <field name="name"/>
+                    <field name="property_tag_ids" widget="many2many_tags"/>
+                    <field name="description"/>
+                    <field name="date_availability"/>
+                    <field name="selling_price"/>
+                    <field name="active_status"/>
+                    <field name="postcode"/>
+                </search>
+            </field>
+        </record>
+
+        <menuitem id="test_menu_root" name="Real Estate">
+            <menuitem id="properties_menu" name="Properties">
+                <menuitem id="test_model_menu_action" action="test_model_action"/>
+            </menuitem>
+        </menuitem>
+
+    </data>
+</odoo>

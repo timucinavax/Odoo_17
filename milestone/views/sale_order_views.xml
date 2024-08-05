@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="sale_order_view_form" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.sale</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_confirm']" position="after">
+                <field name="update_project" invisible="1"/>
+                <field name="project_created" invisible="1"/>
+                <field name="state" invisible="1"/>
+                <button name="action_create_project_for_product" string="Create Project"
+                        type="object" invisible="project_created"/>
+                <button name="action_update_project_for_product" string="Update Project"
+                        type="object"
+                        confirm="The changes will be applied to your project , Do you want to confirm"
+                        invisible="not update_project or state == 'draft'"/>
+            </xpath>
+            <xpath expr="//sheet/div/button[@name='action_view_invoice']" position="after">
+                <button name="action_view_milestones"
+                        class="oe_stat_button"
+                        icon="fa-check-square-o"
+                        invisible="milestones_count == 0"
+                        type="object">
+                    <field name="milestones_count" widget="statinfo" string="Milestone"/>
+                </button>
+            </xpath>
+            <xpath expr="//tree/field[@name='name']" position="after">
+                <field name="milestone"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

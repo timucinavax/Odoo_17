@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <record id="view_medicine_action" model="ir.actions.act_window">
+            <field name="name">Medicines</field>
+            <field name="res_model">product.product</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_medicine_root" action="view_medicine_action" parent="configuration_menu"/>
+    </data>
+</odoo>

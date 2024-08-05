@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--Own requests user records-->
+    <record id="employee_transfer_user_record_rule" model="ir.rule">
+        <field name="name">Employee Transfer Logged User</field>
+        <field name="model_id" ref="model_employee_transfer_request"/>
+        <field name="groups" eval="[
+        (4,ref('employee_transfer.employee_transfer_user_access'))]"/>
+        <field name="domain_force">['|',('user_id','=',user.id),
+            ('employee_id.user_id','=',user.id)]
+        </field>
+    </record>
+</odoo>

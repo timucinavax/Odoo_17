@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="employee_transfer_request_view_form" model="ir.ui.view">
+        <field name="name">employee.transfer.request.form</field>
+        <field name="model">employee.transfer.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit"
+                            type="object"
+                            invisible="state != 'draft'"
+                            string="Submit"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" invisible="1"/>
+                            <field name="user_ids" invisible="1"/>
+                            <field name="employee_id"
+                                   groups="employee_transfer.employee_transfer_user_access"
+                                    domain="[('user_id','=',user_id)]"/>
+                            <field name="employee_id"
+                                   groups="employee_transfer.employee_transfer_manager_access"
+                                   domain="[('user_id','not in',user_ids)]"/>
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="dest_company_id"
+                                   domain="[('id','!=',company_id)]"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="employee_transfer_request_view_tree" model="ir.ui.view">
+        <field name="name">employee.transfer.request.tree</field>
+        <field name="model">employee.transfer.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="dest_company_id"/>
+                <field name="state"
+                       decoration-info="state == 'draft'"
+                       decoration-primary="state == 'submit'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'reject'"
+                       widget="badge"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_employee_transfer_request" model="ir.actions.act_window">
+        <field name="name">Requests</field>
+        <field name="res_model">employee.transfer.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="root_employee_transfer" name="Employee Transfer">
+        <menuitem id="menu_employee_transfer_request"
+                  action="action_employee_transfer_request"/>
+    </menuitem>
+</odoo>

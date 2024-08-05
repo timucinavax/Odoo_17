@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="recurring_subscription_root"
+              name="Recurring Subscription">
+        <menuitem id="menu_recurring_subscription"
+                  action="action_recurring_subscription"
+                  sequence="0"/>
+    </menuitem>
+    <menuitem id="menu_configuration"
+              name="Configuration"
+              parent="recurring_subscription_root"/>
+    <menuitem id="menu_recurring_subscription_credit"
+              action="action_recurring_subscription_credit"
+              parent="menu_configuration"/>
+    <menuitem id="menu_view_partner"
+              action="contacts.action_contacts"
+              name="Customers"
+              parent="recurring_subscription_root"
+              sequence="1"/>
+    <menuitem id="menu_crm_lead"
+              action="crm.crm_lead_all_leads"
+              parent="recurring_subscription_root"
+              sequence="2"/>
+    <menuitem id="menu_report"
+              name="Reports"
+              sequence="3"
+              parent="recurring_subscription_root"/>
+    <menuitem id="recurring_subscription_report"
+              name="Subscription"
+              parent="menu_report"
+              action="action_subscription_report_wizard"/>
+    <menuitem id="subscription_credit_report"
+              name="Credit"
+              parent="menu_report"
+              action="action_credit_report_wizard"/>
+    <menuitem id="menu_billing_schedule"
+              action="action_billing_schedule"
+              parent="menu_configuration"/>
+</odoo>

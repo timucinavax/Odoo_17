@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <record id="view_specialization_action" model="ir.actions.act_window">
+            <field name="name">Specializations</field>
+            <field name="res_model">hospital.specialization</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="configuration_menu" name="Configuration" parent="menu_hospital_root">
+            <menuitem id="view_specialization_menu" action="view_specialization_action"/>
+        </menuitem>
+    </data>
+</odoo>

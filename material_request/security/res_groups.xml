@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!-- Material Request - user group category -->
+    <record model="ir.module.category" id="material_request">
+        <field name="name">Material Request</field>
+        <field name="description">User access level Material Request</field>
+        <field name="sequence">21</field>
+    </record>
+    <!-- User group -->
+    <record id="material_req_user_access" model="res.groups">
+        <field name="name">User</field>
+        <field name="comment">Material Request User</field>
+        <field name="category_id" ref="material_request"/>
+    </record>
+    <!-- Head user group -->
+    <record id="material_req_head_access" model="res.groups">
+        <field name="name">Head</field>
+        <field name="comment">Material Request Head</field>
+        <field name="category_id" ref="material_request"/>
+    </record>
+    <!-- Manager user group -->
+    <record id="material_req_manager_access" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="comment">Material Request Manager</field>
+        <field name="category_id" ref="material_request"/>
+    </record>
+</odoo>

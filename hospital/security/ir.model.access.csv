@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_specialization_user,access_specialization_user,model_hospital_specialization,base.group_user,1,1,1,1
+access_op_ticket_user,access_op_ticket_user,model_hospital_op_ticket,base.group_user,1,1,1,1
+access_consultation_user,access_consultation_user,model_hospital_consultation,base.group_user,1,1,1,1

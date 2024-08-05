@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+   <t t-name="test_module.hello">
+      <p>"Hello World"</p>
+      <t t-value=""/>
+      <t t-esc="props.state"/>
+   </t>
+</templates>
