@@ -15,8 +15,7 @@ class SubscriptionReport(models.TransientModel):
     _name = 'subscription.report'
     _description = 'Subscription Report'
 
-    """ Wizard for print report of Subscription with or without filter """
-
+    """ Wizard for print report of Subscription with given filters """
     subscription_ids = fields.Many2many("recurring.subscription")
     frequency = fields.Selection(selection=[('daily', 'Daily'),
                                             ('weekly', 'Weekly'),
@@ -38,36 +37,6 @@ class SubscriptionReport(models.TransientModel):
         if (self.start_date and self.end_date and self.start_date >
                 self.end_date):
             raise ValidationError("Start date must be less than end date")
-
-    def action_print_xlsx(self):
-        # print report in xlsx format
-        result = self._get_subscriptions()
-        subscription = self.subscription_ids
-        if not subscription:
-            for rec in result:
-                subscription += self.subscription_ids.browse(rec['id'])
-        data = subscription.read()
-        report_name = 'Subscription Report'
-        if len(subscription) == 1:
-            report_name += ' of - ' + str(subscription[0].order)
-        return {
-            'type': 'ir.actions.report',
-            'data': {
-                'model': 'subscription.report',
-                'options': json.dumps(data, default=date_utils.json_default),
-                'output_format': 'xlsx',
-                'report_name': report_name,
-            },
-            'report_type': 'xlsx'
-        }
-
-    def action_print_pdf(self):
-        # print report in PDF format
-        result = self._get_subscriptions()
-        data = {'date': self.read()[0], 'report': result}
-        return (self.env.ref(
-            'recurring_subscription.action_report_subscription').report_action(
-            None, data))
 
     def _get_subscriptions(self):
         # get and return the subscriptions using sql query
@@ -103,7 +72,39 @@ class SubscriptionReport(models.TransientModel):
                     params.append(self.end_date)
         self.env.cr.execute(query, tuple(params))
         result = self.env.cr.dictfetchall()
+        if not result:
+            raise ValidationError("No matching records found...!")
         return result
+
+    def action_print_pdf(self):
+        # print report in PDF format
+        result = self._get_subscriptions()
+        data = {'date': self.read()[0], 'report': result}
+        return (self.env.ref(
+            'recurring_subscription.action_report_subscription').report_action(
+            None, data))
+
+    def action_print_xlsx(self):
+        # print report in xlsx format
+        result = self._get_subscriptions()
+        subscription = self.subscription_ids
+        if not subscription:
+            for rec in result:
+                subscription += self.subscription_ids.browse(rec['id'])
+        data = subscription.read()
+        report_name = 'Subscription Report'
+        if len(subscription) == 1:
+            report_name += ' of - ' + str(subscription.order)
+        return {
+            'type': 'ir.actions.report',
+            'data': {
+                'model': 'subscription.report',
+                'options': json.dumps(data, default=date_utils.json_default),
+                'output_format': 'xlsx',
+                'report_name': report_name,
+            },
+            'report_type': 'xlsx'
+        }
 
     def get_xlsx_report(self, data, response):
         # write data to xlsx file
@@ -160,7 +161,3 @@ class SubscriptionReport(models.TransientModel):
         output.seek(0)
         response.stream.write(output.read())
         output.close()
-
-
-
-

@@ -33,7 +33,7 @@ class SubscriptionReport(models.TransientModel):
         data = credit.read()
         report_name = 'Credit Report'
         if len(list(self.subscription_ids)) == 1:
-            report_name += ' of - ' + str(self.subscription_ids[0].order)
+            report_name += ' of - ' + str(self.subscription_ids.order)
         return {
             'type': 'ir.actions.report',
             'data': {
