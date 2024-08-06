@@ -8,7 +8,14 @@
                     <div class="oe_structure"/>
                     <h2>
                         <span>
-                            <center>Subscription Report</center>
+                            <t t-if="len(docs) == 1">
+                                <center>Subscription Report of
+                                    <t t-esc="docs[0].order"/>
+                                </center>
+                            </t>
+                            <t t-else="">
+                                <center>Subscription Report</center>
+                            </t>
                         </span>
                     </h2>
                     <table class="table table-sm o_main_table table-borderless mt-4">
@@ -69,7 +76,9 @@
                     <div class="oe_structure"/>
                     <h2>
                         <span>
-                            <center>Subscription Credit Report</center>
+                                <center>
+                                    Credit Report
+                                </center>
                         </span>
                     </h2>
                     <table class="table table-sm o_main_table table-borderless mt-4">

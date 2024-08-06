@@ -5,7 +5,6 @@ from odoo.tools import date_utils
 from datetime import date
 import json
 import io
-from psycopg2 import OperationalError
 try:
     from odoo.tools.misc import xlsxwriter
 except ImportError:
@@ -40,7 +39,38 @@ class SubscriptionReport(models.TransientModel):
                 self.end_date):
             raise ValidationError("Start date must be less than end date")
 
+    def action_print_xlsx(self):
+        # print report in xlsx format
+        result = self._get_subscriptions()
+        subscription = self.subscription_ids
+        if not subscription:
+            for rec in result:
+                subscription += self.subscription_ids.browse(rec['id'])
+        data = subscription.read()
+        report_name = 'Subscription Report'
+        if len(subscription) == 1:
+            report_name += ' of - ' + str(subscription[0].order)
+        return {
+            'type': 'ir.actions.report',
+            'data': {
+                'model': 'subscription.report',
+                'options': json.dumps(data, default=date_utils.json_default),
+                'output_format': 'xlsx',
+                'report_name': report_name,
+            },
+            'report_type': 'xlsx'
+        }
+
+    def action_print_pdf(self):
+        # print report in PDF format
+        result = self._get_subscriptions()
+        data = {'date': self.read()[0], 'report': result}
+        return (self.env.ref(
+            'recurring_subscription.action_report_subscription').report_action(
+            None, data))
+
     def _get_subscriptions(self):
+        # get and return the subscriptions using sql query
         query = 'SELECT * from recurring_subscription'
         params = []
         if self.subscription_ids:
@@ -86,8 +116,7 @@ class SubscriptionReport(models.TransientModel):
                                          'top': 1,
                                          'left': 1,
                                          'right': 1,
-                                         'border_color': '#000000'
-                                         })
+                                         'border_color': '#000000'})
         main_head.set_bg_color('#C8FFFE')
         head = workbook.add_format({'font_size': '12px',
                                     'align': 'center',
@@ -96,8 +125,7 @@ class SubscriptionReport(models.TransientModel):
                                     'bottom': 1,
                                     'left': 1,
                                     'right': 1,
-                                    'border_color': '#000000'
-                                    })
+                                    'border_color': '#000000'})
         cell_format = workbook.add_format({'font_size': '10px',
                                            'align': 'center',
                                            'bottom': 1,
@@ -124,52 +152,15 @@ class SubscriptionReport(models.TransientModel):
             sheet.write(row, col + 3, line.get('product_id')[1], cell_format)
             sheet.write(row, col + 4, line.get('recurring_amount'), cell_format)
             sheet.write(row, col + 5, line.get('credit_amount'), cell_format)
-            sheet.write(row, col + 6, dict(self.subscription_ids._fields['state'].selection).get(line.get('state')), cell_format)
-
+            sheet.write(row, col + 6, dict(self.subscription_ids.
+                                           _fields['state'].selection).get(
+                line.get('state')), cell_format)
             row += 1
         workbook.close()
         output.seek(0)
         response.stream.write(output.read())
         output.close()
 
-    def action_print(self):
-        # create and print report in xlsx format
-        result = self._get_subscriptions()
-        subscription = self.subscription_ids
-        if not subscription:
-            for rec in result:
-                subscription += self.subscription_ids.browse(rec['id'])
-        data = subscription.read()
-        return {
-            'type': 'ir.actions.report',
-            'data': {
-                'model': 'subscription.report',
-                'options': json.dumps(data, default=date_utils.json_default),
-                'output_format': 'xlsx',
-                'report_name': 'Subscription Report',
-            },
-            'report_type': 'xlsx'
-        }
-
-    def action_report_subscription(self):
-        result = self._get_subscriptions()
-        ids = [rec.get('id') for rec in result]
-        return (self.env.ref(
-            'recurring_subscription.action_report_subscription').report_action(
-            ids, None))
 
 
-class SubscriptionFormReport(models.AbstractModel):
-    _name = "report.recurring_subscription.report_subscription"
 
-    @api.model
-    def _get_report_values(self, docids, data=None):
-        docs = False
-        if self.env['recurring.subscription'].search([('id', 'in', docids)]):
-            docs = self.env['recurring.subscription'].browse(docids)
-        return {
-            'doc_ids': docids,
-            'doc_model': 'recurring.subscription',
-            'docs': docs,
-            'data': data
-        }

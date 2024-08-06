@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.tools import date_utils
 import json
 import io
-from psycopg2 import OperationalError
 try:
     from odoo.tools.misc import xlsxwriter
 except ImportError:
@@ -23,6 +22,37 @@ class SubscriptionReport(models.TransientModel):
                                         ('fully_approved', 'Fully Approved'),
                                         ('rejected', 'Rejected')])
 
+    def action_print_xlsx(self):
+        # create and print report in xlsx format
+        result = self._get_credits()
+        credit = self.subscription_ids.credit_ids
+        if not credit:
+            for rec in result:
+                credit += self.env['recurring.subscription.credit'].browse(
+                    rec['id'])
+        data = credit.read()
+        report_name = 'Credit Report'
+        if len(list(self.subscription_ids)) == 1:
+            report_name += ' of - ' + str(self.subscription_ids[0].order)
+        return {
+            'type': 'ir.actions.report',
+            'data': {
+                'model': 'credit.report',
+                'options': json.dumps(data, default=date_utils.json_default),
+                'output_format': 'xlsx',
+                'report_name': report_name,
+            },
+            'report_type': 'xlsx'
+        }
+
+    def action_print_pdf(self):
+        # print credit report in PDF format
+        result = self._get_credits()
+        data = {'date': self.read()[0], 'report': result}
+        return (self.env.ref(
+            'recurring_subscription.action_report_credit').report_action(
+            None, data))
+
     def _get_credits(self):
         # compute credits based on selected subscriptions
         query = 'SELECT * from recurring_subscription_credit'
@@ -38,7 +68,6 @@ class SubscriptionReport(models.TransientModel):
             params.append(self.state)
         self.env.cr.execute(query, params)
         result = self.env.cr.dictfetchall()
-        print('get', result)
         return result
 
     def get_xlsx_report(self, data, response):
@@ -96,45 +125,6 @@ class SubscriptionReport(models.TransientModel):
         response.stream.write(output.read())
         output.close()
 
-    def action_print(self):
-        # create and print report in xlsx format
-        result = self._get_credits()
-        credit = self.subscription_ids.credit_ids
-        if not credit:
-            for rec in result:
-                credit += self.env['recurring.subscription.credit'].browse(
-                    rec['id'])
-        data = credit.read()
-        return {
-            'type': 'ir.actions.report',
-            'data': {
-                'model': 'credit.report',
-                'options': json.dumps(data, default=date_utils.json_default),
-                'output_format': 'xlsx',
-                'report_name': 'Credit Report',
-            },
-            'report_type': 'xlsx'
-        }
-
-    def action_report_credit(self):
-        result = self._get_credits()
-        ids = [rec.get('id') for rec in result]
-        return (self.env.ref(
-            'recurring_subscription.action_report_credit').report_action(ids, None))
 
 
-class CreditFormReport(models.AbstractModel):
-    _name = "report.recurring_subscription.report_credit"
-
-    @api.model
-    def _get_report_values(self, docids, data=None):
-        docs = False
-        if self.env['recurring.subscription.credit'].search([('id', 'in', docids)]):
-            docs = self.env['recurring.subscription.credit'].browse(docids)
-        return {
-            'doc_ids': docids,
-            'doc_model': 'recurring.subscription',
-            'docs': docs,
-            'data': data
-        }
 
