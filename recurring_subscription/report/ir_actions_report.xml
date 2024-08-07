@@ -8,8 +8,8 @@
         <field name="report_file">recurring_subscription.report_subscription</field>
         <field name="print_report_name">(len(object.subscription_ids) == 1 and
             'Subscription Report of - %s' % {object.subscription_ids.order} or
-            'Subscription Report')</field>
-        <field name="attachment"/>
+            'Subscription Report')
+        </field>
         <field name="binding_model_id" ref="model_subscription_report"/>
         <field name="binding_type">report</field>
     </record>
@@ -21,8 +21,8 @@
         <field name="report_file">recurring_subscription.report_credit</field>
         <field name="print_report_name">(len(object.subscription_ids) == 1 and
             'Credit Report of - %s' % {object.subscription_ids.order} or
-            'Credit Report')</field>
-        <field name="attachment"/>
+            'Credit Report')
+        </field>
         <field name="binding_model_id" ref="model_credit_report"/>
         <field name="binding_type">report</field>
     </record>

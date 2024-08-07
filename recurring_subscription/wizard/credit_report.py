@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models
 from odoo.tools import date_utils
+from odoo.exceptions import ValidationError
 import json
 import io
 try:
@@ -68,6 +69,8 @@ class SubscriptionReport(models.TransientModel):
             params.append(self.state)
         self.env.cr.execute(query, params)
         result = self.env.cr.dictfetchall()
+        if not result:
+            raise ValidationError("No matching records found ...!")
         return result
 
     def get_xlsx_report(self, data, response):

@@ -13,5 +13,6 @@ class SubscriptionFormReport(models.AbstractModel):
             'doc_ids': docids,
             'doc_model': 'recurring.subscription',
             'docs': docs,
-            'data': data
+            'data': data,
+            'is_partner': data['is_partner']
         }

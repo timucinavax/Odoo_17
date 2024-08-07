@@ -5,6 +5,7 @@ from odoo.tools import date_utils
 from datetime import date
 import json
 import io
+
 try:
     from odoo.tools.misc import xlsxwriter
 except ImportError:
@@ -22,6 +23,7 @@ class SubscriptionReport(models.TransientModel):
                                             ('monthly', 'Monthly'),
                                             ('yearly', 'Yearly'),
                                             ('date', 'Date')])
+    is_partner = fields.Boolean(string="Customer Wise Report")
     start_date = fields.Date()
     end_date = fields.Date()
 
@@ -79,7 +81,7 @@ class SubscriptionReport(models.TransientModel):
     def action_print_pdf(self):
         # print report in PDF format
         result = self._get_subscriptions()
-        data = {'date': self.read()[0], 'report': result}
+        data = {'report': result, 'is_partner': self.is_partner}
         return (self.env.ref(
             'recurring_subscription.action_report_subscription').report_action(
             None, data))
@@ -102,11 +104,12 @@ class SubscriptionReport(models.TransientModel):
                 'options': json.dumps(data, default=date_utils.json_default),
                 'output_format': 'xlsx',
                 'report_name': report_name,
+                'is_partner': self.is_partner
             },
             'report_type': 'xlsx'
         }
 
-    def get_xlsx_report(self, data, response):
+    def get_xlsx_report(self, data, response, is_partner):
         # write data to xlsx file
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
@@ -119,6 +122,13 @@ class SubscriptionReport(models.TransientModel):
                                          'right': 1,
                                          'border_color': '#000000'})
         main_head.set_bg_color('#C8FFFE')
+        sub_head = workbook.add_format({'align': 'center',
+                                        'bold': True,
+                                        'font_size': '14px',
+                                        'top': 1,
+                                        'left': 1,
+                                        'right': 1,
+                                        'border_color': '#000000'})
         head = workbook.add_format({'font_size': '12px',
                                     'align': 'center',
                                     'bold': True,
@@ -133,30 +143,74 @@ class SubscriptionReport(models.TransientModel):
                                            'left': 1,
                                            'right': 1,
                                            'border_color': '#000000'})
-        sheet.merge_range('A1:G2', 'Subscription Report', main_head)
-        sheet.set_column(1, 2, 15)
-        sheet.set_column(3, 3, 20)
-        sheet.set_column(5, 5, 20)
-        sheet.write(2, 0, 'SL.No', head)
-        sheet.write(2, 1, 'Name', head)
-        sheet.write(2, 2, 'Customer', head)
-        sheet.write(2, 3, 'Product', head)
-        sheet.write(2, 4, 'Amount', head)
-        sheet.write(2, 5, 'Total Credit Applied', head)
-        sheet.write(2, 6, 'State', head)
-        row = 3
-        col = 0
-        for line in data:
-            sheet.write(row, col, row-2, cell_format)
-            sheet.write(row, col + 1, line.get('order'), cell_format)
-            sheet.write(row, col + 2, line.get('partner_id')[1], cell_format)
-            sheet.write(row, col + 3, line.get('product_id')[1], cell_format)
-            sheet.write(row, col + 4, line.get('recurring_amount'), cell_format)
-            sheet.write(row, col + 5, line.get('credit_amount'), cell_format)
-            sheet.write(row, col + 6, dict(self.subscription_ids.
-                                           _fields['state'].selection).get(
-                line.get('state')), cell_format)
-            row += 1
+        if is_partner == 'true':
+            partner_ids = list(set(rec.get('partner_id')[0] for rec in data))
+            row = 4
+            col = 0
+            sheet.merge_range('A1:F2', 'Subscription Report', main_head)
+            for rec in partner_ids:
+                sl_no = 1
+                subscription = [line for line in data if
+                                line.get('partner_id')[0] == rec]
+                sheet.merge_range('A' + str(row) + ':F' + str(row),
+                                  ''.join([line.get('partner_id')[1] for line in
+                                           subscription]),
+                                  sub_head)
+                sheet.set_column(1, 1, 15)
+                sheet.set_column(2, 2, 20)
+                sheet.set_column(4, 4, 20)
+                sheet.write(row, 0, 'SL.No', head)
+                sheet.write(row, 1, 'Name', head)
+                sheet.write(row, 2, 'Product', head)
+                sheet.write(row, 3, 'Amount', head)
+                sheet.write(row, 4, 'Total Credit Applied', head)
+                sheet.write(row, 5, 'State', head)
+                for line in subscription:
+                    sheet.write(row + 1, col, sl_no, cell_format)
+                    sheet.write(row + 1, col + 1, line.get('order'),
+                                cell_format)
+                    sheet.write(row + 1, col + 2, line.get('product_id')[1],
+                                cell_format)
+                    sheet.write(row + 1, col + 3, line.get('recurring_amount'),
+                                cell_format)
+                    sheet.write(row + 1, col + 4, line.get('credit_amount'),
+                                cell_format)
+                    sheet.write(row + 1, col + 5, dict(self.subscription_ids.
+                                                       _fields[
+                                                           'state'].selection).get(
+                        line.get('state')), cell_format)
+                    row += 1
+                    sl_no += 1
+                row += 3
+        else:
+            sheet.merge_range('A1:G2', 'Subscription Report', main_head)
+            sheet.set_column(1, 2, 15)
+            sheet.set_column(3, 3, 20)
+            sheet.set_column(5, 5, 20)
+            sheet.write(2, 0, 'SL.No', head)
+            sheet.write(2, 1, 'Name', head)
+            sheet.write(2, 2, 'Customer', head)
+            sheet.write(2, 3, 'Product', head)
+            sheet.write(2, 4, 'Amount', head)
+            sheet.write(2, 5, 'Total Credit Applied', head)
+            sheet.write(2, 6, 'State', head)
+            row = 3
+            col = 0
+            for line in data:
+                sheet.write(row, col, row - 2, cell_format)
+                sheet.write(row, col + 1, line.get('order'), cell_format)
+                sheet.write(row, col + 2, line.get('partner_id')[1],
+                            cell_format)
+                sheet.write(row, col + 3, line.get('product_id')[1],
+                            cell_format)
+                sheet.write(row, col + 4, line.get('recurring_amount'),
+                            cell_format)
+                sheet.write(row, col + 5, line.get('credit_amount'),
+                            cell_format)
+                sheet.write(row, col + 6, dict(self.subscription_ids.
+                                               _fields['state'].selection).get(
+                    line.get('state')), cell_format)
+                row += 1
         workbook.close()
         output.seek(0)
         response.stream.write(output.read())
