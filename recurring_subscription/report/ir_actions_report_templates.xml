@@ -49,10 +49,10 @@
                                             <span t-field="sub.product_id"/>
                                         </td>
                                         <td>
-                                            <span t-out="'$''%.1f'%sub.recurring_amount"/>
+                                            <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.recurring_amount)"/>
                                         </td>
                                         <td>
-                                            <span t-out="'$''%.1f'%sub.credit_amount"/>
+                                            <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.credit_amount)"/>
                                         </td>
                                         <td>
                                             <span t-field="sub.state"/>
@@ -92,10 +92,10 @@
                                         <span t-field="sub.product_id"/>
                                     </td>
                                     <td>
-                                        <span t-out="'$''%.1f'%(sub.recurring_amount)"/>
+                                        <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.recurring_amount)"/>
                                     </td>
                                     <td>
-                                        <span t-out="'$''%.1f'%(sub.credit_amount)"/>
+                                        <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.credit_amount)"/>
                                     </td>
                                     <td>
                                         <span t-field="sub.state"/>
@@ -146,10 +146,10 @@
                                     <span t-field="credit.partner_id"/>
                                 </td>
                                 <td>
-                                    <span t-out="'$''%.1f'%(credit.credit_amount)"/>
+                                    <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,credit.credit_amount)"/>
                                 </td>
                                 <td>
-                                    <span t-out="'$''%.1f'%(credit.amount_pending)"/>
+                                    <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,credit.amount_pending)"/>
                                 </td>
                                 <td>
                                     <span t-field="credit.state"/>

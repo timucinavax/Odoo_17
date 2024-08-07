@@ -53,14 +53,14 @@ class SubscriptionReport(models.TransientModel):
                 query += ' WHERE due_date = %s'
                 params.append(date.today())
             elif self.frequency == 'weekly':
-                query += (' WHERE EXTRACT(WEEK from due_date) ='
-                          ' EXTRACT(WEEK from CURRENT_DATE)')
+                query += """ WHERE EXTRACT(WEEK from due_date) = 
+                EXTRACT(WEEK from CURRENT_DATE)"""
             elif self.frequency == 'monthly':
-                query += (' WHERE EXTRACT(MONTH from due_date) ='
-                          ' EXTRACT(MONTH from CURRENT_DATE)')
+                query += """WHERE EXTRACT(MONTH from due_date) = 
+                EXTRACT(MONTH from CURRENT_DATE)"""
             elif self.frequency == 'yearly':
-                query += (' WHERE EXTRACT(YEAR from due_date) ='
-                          ' EXTRACT(YEAR from CURRENT_DATE)')
+                query += """ WHERE EXTRACT(YEAR from due_date) = 
+                EXTRACT(YEAR from CURRENT_DATE)"""
             elif self.frequency == 'date':
                 if self.start_date and not self.end_date:
                     query += ' WHERE due_date >= %s'
