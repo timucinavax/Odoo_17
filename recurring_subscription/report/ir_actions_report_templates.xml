@@ -21,7 +21,7 @@
                         <t t-foreach="docs.partner_id" t-as="doc">
                             <t t-set="subscription"
                                t-value="docs.filtered(lambda s: s.partner_id == doc)"/>
-                            <span style="font-size: 24px;">Customer :
+                            <span style="font-size: 24px;">
                                 <t t-out="doc.name"/>
                             </span>
                             <table class="table table-sm o_main_table table-borderless mt-4">
@@ -49,12 +49,10 @@
                                             <span t-field="sub.product_id"/>
                                         </td>
                                         <td>
-                                            <span t-out="sub.recurring_amount"
-                                                  format="%.1f"/>
+                                            <span t-out="'$''%.1f'%sub.recurring_amount"/>
                                         </td>
                                         <td>
-                                            <span t-out="sub.credit_amount"
-                                                  format="%.1f"/>
+                                            <span t-out="'$''%.1f'%sub.credit_amount"/>
                                         </td>
                                         <td>
                                             <span t-field="sub.state"/>
@@ -94,12 +92,10 @@
                                         <span t-field="sub.product_id"/>
                                     </td>
                                     <td>
-                                        <span t-out="sub.recurring_amount"
-                                              format="%.1f"/>
+                                        <span t-out="'$''%.1f'%(sub.recurring_amount)"/>
                                     </td>
                                     <td>
-                                        <span t-out="sub.credit_amount"
-                                              format="%.1f"/>
+                                        <span t-out="'$''%.1f'%(sub.credit_amount)"/>
                                     </td>
                                     <td>
                                         <span t-field="sub.state"/>
@@ -150,10 +146,10 @@
                                     <span t-field="credit.partner_id"/>
                                 </td>
                                 <td>
-                                    <span t-field="credit.credit_amount"/>
+                                    <span t-out="'$''%.1f'%(credit.credit_amount)"/>
                                 </td>
                                 <td>
-                                    <span t-field="credit.amount_pending"/>
+                                    <span t-out="'$''%.1f'%(credit.amount_pending)"/>
                                 </td>
                                 <td>
                                     <span t-field="credit.state"/>

@@ -152,10 +152,9 @@ class SubscriptionReport(models.TransientModel):
                 sl_no = 1
                 subscription = [line for line in data if
                                 line.get('partner_id')[0] == rec]
-                sheet.merge_range('A' + str(row) + ':F' + str(row),
-                                  ''.join([line.get('partner_id')[1] for line in
-                                           subscription]),
-                                  sub_head)
+                for record in subscription:
+                    sheet.merge_range('A' + str(row) + ':F' + str(row),
+                                      record.get('partner_id')[1], sub_head)
                 sheet.set_column(1, 1, 15)
                 sheet.set_column(2, 2, 20)
                 sheet.set_column(4, 4, 20)
