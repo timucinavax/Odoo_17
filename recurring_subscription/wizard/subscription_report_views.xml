@@ -14,6 +14,8 @@
                         <field name="is_partner"/>
                     </group>
                     <group>
+                        <field name="sort_by"/>
+                        <field name="order_by" invisible="not sort_by" required="sort_by"/>
                         <field name="start_date" invisible="frequency != 'date'"/>
                         <field name="end_date" invisible="frequency != 'date'"/>
                     </group>

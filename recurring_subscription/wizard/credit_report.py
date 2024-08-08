@@ -56,16 +56,21 @@ class SubscriptionReport(models.TransientModel):
 
     def _get_credits(self):
         # compute credits based on selected subscriptions
-        query = 'SELECT * from recurring_subscription_credit'
-        params = []
+        query = """
+        SELECT recurring_subscription_credit.id AS id,
+        recurring_subscription_credit.subscription_id AS subscription_id ,
+        recurring_subscription_credit.state AS state
+         from recurring_subscription_credit JOIN recurring_subscription 
+         ON recurring_subscription_credit.subscription_id = 
+         recurring_subscription.id  AND 
+         recurring_subscription.company_id in  %s
+         """
+        params = [tuple(self.env.company.ids)]
         if self.subscription_ids:
-            query += ' WHERE subscription_id in %s'
+            query += ' AND recurring_subscription_credit.subscription_id in %s'
             params.append(tuple(self.subscription_ids.ids))
-        if self.state and self.subscription_ids:
-            query += ' AND state = %s'
-            params.append(self.state)
-        elif self.state:
-            query += ' WHERE state = %s'
+        if self.state:
+            query += ' AND recurring_subscription_credit.state = %s'
             params.append(self.state)
         self.env.cr.execute(query, params)
         result = self.env.cr.dictfetchall()

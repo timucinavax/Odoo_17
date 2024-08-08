@@ -11,7 +11,7 @@ class CreditFormReport(models.AbstractModel):
             [rec['id'] for rec in data['report']])
         return {
             'doc_ids': docids,
-            'doc_model': 'recurring.subscription',
+            'doc_model': 'recurring.subscription.credit',
             'docs': docs,
             'data': data
         }

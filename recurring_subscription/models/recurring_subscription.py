@@ -45,7 +45,8 @@ class RecurringSubscription(models.Model):
                                           string="Billing Schedule")
     account_move_ids = fields.One2many("account.move",
                                        "subscription_id")
-    credit_amount = fields.Monetary(compute="_compute_credit_amount")
+    credit_amount = fields.Monetary(store=True,
+                                    compute="_compute_credit_amount")
 
     @api.model_create_multi
     def create(self, record):
@@ -58,9 +59,12 @@ class RecurringSubscription(models.Model):
     @api.depends('credit_ids')
     def _compute_credit_amount(self):
         # compute the total amount credited for the subscription
+        print('compute')
         for rec in self:
-            rec.credit_amount = False
-            rec.credit_amount = sum(rec.credit_ids.mapped('credit_amount'))
+            rec.credit_amount = 0.00
+            rec.update({
+                'credit_amount': sum(rec.credit_ids.mapped('credit_amount'))
+            })
 
     @api.depends('due_date')
     def _compute_credit_ids(self):

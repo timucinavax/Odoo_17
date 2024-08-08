@@ -8,7 +8,7 @@ class SubscriptionFormReport(models.AbstractModel):
     @api.model
     def _get_report_values(self, docids, data=None):
         docs = self.env['recurring.subscription'].browse(
-            [rec['id'] for rec in data['report']])
+            [rec['rid'] for rec in data['report']])
         return {
             'doc_ids': docids,
             'doc_model': 'recurring.subscription',

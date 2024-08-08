@@ -20,7 +20,7 @@
         'data/ir_sequence_data.xml',
         'data/subscription_email_template.xml',
         'data/ir_cron_data.xml',
-        'report/ir_actions_report_templates.xml',
+        'report/report_templates.xml',
         'report/ir_actions_report.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',

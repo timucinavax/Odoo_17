@@ -16,7 +16,6 @@ class SubscriptionReport(models.TransientModel):
     _name = 'subscription.report'
     _description = 'Subscription Report'
 
-    """ Wizard for print report of Subscription with given filters """
     subscription_ids = fields.Many2many("recurring.subscription")
     frequency = fields.Selection(selection=[('daily', 'Daily'),
                                             ('weekly', 'Weekly'),
@@ -26,6 +25,18 @@ class SubscriptionReport(models.TransientModel):
     is_partner = fields.Boolean(string="Customer Wise Report")
     start_date = fields.Date()
     end_date = fields.Date()
+    sort_by = fields.Selection(string="Sort By",
+                               selection=[
+                                   ('id', 'ID'),
+                                   ('recurring_amount', 'Total Amount'),
+                                   ('credit_amount', 'Credit Amount'),
+                                   ('state', 'State'),
+                                   ('partner_id', 'Customer Name')
+                               ])
+    order_by = fields.Selection(string="Order By",
+                                selection=[('ASC', 'Ascending'),
+                                           ('DESC', 'Descending')],
+                                default='ASC')
 
     @api.onchange('frequency')
     def _onchange_frequency(self):
@@ -42,36 +53,48 @@ class SubscriptionReport(models.TransientModel):
 
     def _get_subscriptions(self):
         # get and return the subscriptions using sql query
-        query = 'SELECT * from recurring_subscription'
-        params = []
+        query = """
+        SELECT recurring_subscription.id as rid,
+         recurring_subscription.due_date AS due_date,
+         res_partner.id
+         from recurring_subscription JOIN res_partner ON
+          res_partner.id = recurring_subscription.partner_id WHERE recurring_subscription.company_id in %s"""
+        params = [tuple(self.env.company.ids)]
         if self.subscription_ids:
-            query += ' WHERE id in %s'
+            query += ' AND rid in %s'
             params.append(tuple(self.subscription_ids.ids))
         elif self.frequency:
             self.subscription_ids = False
             if self.frequency == 'daily':
-                query += ' WHERE due_date = %s'
+                query += ' AND due_date = %s'
                 params.append(date.today())
             elif self.frequency == 'weekly':
-                query += """ WHERE EXTRACT(WEEK from due_date) = 
+                query += """ AND EXTRACT(WEEK from due_date) = 
                 EXTRACT(WEEK from CURRENT_DATE)"""
             elif self.frequency == 'monthly':
-                query += """WHERE EXTRACT(MONTH from due_date) = 
+                query += """ AND EXTRACT(MONTH from due_date) = 
                 EXTRACT(MONTH from CURRENT_DATE)"""
             elif self.frequency == 'yearly':
-                query += """ WHERE EXTRACT(YEAR from due_date) = 
+                query += """ AND EXTRACT(YEAR from due_date) = 
                 EXTRACT(YEAR from CURRENT_DATE)"""
             elif self.frequency == 'date':
                 if self.start_date and not self.end_date:
-                    query += ' WHERE due_date >= %s'
+                    query += ' AND due_date >= %s'
                     params.append(self.start_date)
                 elif self.end_date and not self.start_date:
-                    query += ' WHERE due_date <= %s'
+                    query += ' AND due_date <= %s'
                     params.append(self.end_date)
                 elif self.start_date and self.end_date:
-                    query += ' WHERE due_date BETWEEN %s and %s'
+                    query += ' AND due_date BETWEEN %s and %s'
                     params.append(self.start_date)
                     params.append(self.end_date)
+        if self.sort_by:
+            if self.sort_by == 'partner_id':
+                query += ' ORDER BY res_partner.name'
+            else:
+                query += ' ORDER BY ' + str(self.sort_by)
+            if self.order_by:
+                query += ' ' + str(self.order_by)
         self.env.cr.execute(query, tuple(params))
         result = self.env.cr.dictfetchall()
         if not result:
@@ -81,7 +104,7 @@ class SubscriptionReport(models.TransientModel):
     def action_print_pdf(self):
         # print report in PDF format
         result = self._get_subscriptions()
-        data = {'report': result, 'is_partner': self.is_partner}
+        data = {'report': result, 'is_partner': self.is_partner, 'date': self.read()[0]}
         return (self.env.ref(
             'recurring_subscription.action_report_subscription').report_action(
             None, data))
@@ -92,7 +115,7 @@ class SubscriptionReport(models.TransientModel):
         subscription = self.subscription_ids
         if not subscription:
             for rec in result:
-                subscription += self.subscription_ids.browse(rec['id'])
+                subscription += self.subscription_ids.browse(rec['rid'])
         data = subscription.read()
         report_name = 'Subscription Report'
         if len(subscription) == 1:
