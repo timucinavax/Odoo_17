@@ -22,6 +22,7 @@
         'data/ir_cron_data.xml',
         'report/report_templates.xml',
         'report/ir_actions_report.xml',
+        'views/recurring_subsription_template.xml',
         'views/res_partner_views.xml',
         'views/crm_lead_views.xml',
         'views/recurring_subscription_views.xml',

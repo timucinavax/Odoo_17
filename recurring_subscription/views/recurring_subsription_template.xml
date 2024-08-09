@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="subscription_data" name="Subscription Details">
+        <t t-call="portal.portal_layout">
+            <div>
+                <h2>
+                    <center>
+                        <span>Subscriptions</span>
+                    </center>
+                </h2>
+            </div>
+            <table class="table table-striped">
+                <thead style="font-size:23px">
+                    <tr>
+                        <th>Subscription</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Due Date</th>
+                        <th>Amount</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="record" t-as="rec">
+                        <tr>
+                            <td>
+                                <span t-field="rec.order"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.partner_id"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.product_id"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.due_date"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.recurring_amount"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.state"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </t>
+    </template>
+    <template id="subscription_form" name="Subscription Form">
+        <t t-call="portal.portal_layout">
+            <div>
+                <h2>
+                    <center>
+                        <span>Recurring Subscription Form</span>
+                    </center>
+                </h2>
+            </div>
+            <div>
+                <form class="form-control">
+                    <select id="partner_id" name="partner_id" required="True" class="form-control" groups="base.group_user">
+                        <t t-foreach="partner_id" t-as="partner">
+                            <option t-att-value="partner.id" t-esc="partner.name"/>
+                        </t>
+                    </select>
+                    <br/>
+                    <input type="text-area" name="description" class="form-control" placeholder="Description"/>
+                    <br/>
+                    <select id="product_id" name="product_id" required="True" class="form-control">
+                        <label for="product_id">Product : </label>
+                        <t t-foreach="product_id" t-as="product">
+                            <option t-att-value="product.id" t-esc="product.name"/>
+                        </t>
+                    </select>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>
