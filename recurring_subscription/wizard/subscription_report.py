@@ -54,11 +54,12 @@ class SubscriptionReport(models.TransientModel):
     def _get_subscriptions(self):
         # get and return the subscriptions using sql query
         query = """
-        SELECT recurring_subscription.id as rid,
+        SELECT recurring_subscription.id AS rid,
          recurring_subscription.due_date AS due_date,
          res_partner.id
          from recurring_subscription JOIN res_partner ON
-          res_partner.id = recurring_subscription.partner_id WHERE recurring_subscription.company_id in %s"""
+          res_partner.id = recurring_subscription.partner_id WHERE 
+          recurring_subscription.company_id in %s"""
         params = [tuple(self.env.company.ids)]
         if self.subscription_ids:
             query += ' AND rid in %s'
