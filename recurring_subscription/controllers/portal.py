@@ -29,24 +29,19 @@ class RecurringSubscription(http.Controller):
         """Create new subscription from portal"""
         uid = request.session.uid
         # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
-        if request.env['res.users'].search([('id', '=', uid)]).has_group(
-                'base.group_portal'):
-            # check whether logged user is portal user
-            uid = request.env['res.users'].search([('id', '=', uid)])
         record = {
-            'establishment': uid.partner_id.establishment,
-            'partner_id': uid.partner_id.id,
+            'establishment': request.env['website.visitor']._get_visitor_from_request().partner_id.establishment,
+            'partner_id': request.env['website.visitor']._get_visitor_from_request().partner_id,
             'description': post.get('description'),
-            'terms': post.get('terms'),
             'product_id': post.get('product_id'),
             'recurring_amount': post.get('recurring_amount')
         }
         values = {
-            'partner_id': request.env['res.partner'].sudo().search([]),
-            'product_id': request.env['product.product'].sudo().search([])
+            'products': request.env['product.product'].sudo().search([]),
+            'company_id': request.env.company
         }
         print(record.get('establishment'))
-        print(record.get('partner_id'))
+        print(request.env.company.name)
         return request.render('recurring_subscription.subscription_form', values)
 
 
