@@ -13,6 +13,7 @@ except ImportError:
 
 
 class SubscriptionReport(models.TransientModel):
+    """ Generate report for subscriptions based on custom filters"""
     _name = 'subscription.report'
     _description = 'Subscription Report'
 
@@ -46,19 +47,20 @@ class SubscriptionReport(models.TransientModel):
 
     @api.onchange('start_date', 'end_date')
     def _onchange_start_date(self):
-        # check whether the start date is less than end date
+        """check whether the start date is less than end date"""
         if (self.start_date and self.end_date and self.start_date >
                 self.end_date):
             raise ValidationError("Start date must be less than end date")
 
     def _get_subscriptions(self):
-        # get and return the subscriptions using sql query
+        """get and return the subscriptions using sql query"""
         query = """
         SELECT recurring_subscription.id as rid,
          recurring_subscription.due_date AS due_date,
          res_partner.id
          from recurring_subscription JOIN res_partner ON
-          res_partner.id = recurring_subscription.partner_id WHERE recurring_subscription.company_id in %s"""
+          res_partner.id = recurring_subscription.partner_id 
+          WHERE recurring_subscription.company_id in %s"""
         params = [tuple(self.env.company.ids)]
         if self.subscription_ids:
             query += ' AND rid in %s'
@@ -102,21 +104,24 @@ class SubscriptionReport(models.TransientModel):
         return result
 
     def action_print_pdf(self):
-        # print report in PDF format
+        """print report in PDF format"""
         result = self._get_subscriptions()
-        data = {'report': result, 'is_partner': self.is_partner, 'date': self.read()[0]}
+        data = {'report': result, 'is_partner': self.is_partner,
+                'date': self.read()[0]}
         return (self.env.ref(
             'recurring_subscription.action_report_subscription').report_action(
             None, data))
 
     def action_print_xlsx(self):
-        # print report in xlsx format
+        """print report in xlsx format"""
         result = self._get_subscriptions()
         subscription = self.subscription_ids
         if not subscription:
             for rec in result:
+                # browse record based on fetched data in result
                 subscription += self.subscription_ids.browse(rec['rid'])
         data = subscription.read()
+        # set report name as subscription when only one subscription in record
         report_name = 'Subscription Report'
         if len(subscription) == 1:
             report_name += ' of - ' + str(subscription.order)
@@ -133,10 +138,12 @@ class SubscriptionReport(models.TransientModel):
         }
 
     def get_xlsx_report(self, data, response, is_partner):
-        # write data to xlsx file
+        """write data to xlsx file"""
         output = io.BytesIO()
+        # create workbook and worksheet
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet()
+        # add format for main heading ,table heading, cells, etc...
         main_head = workbook.add_format({'align': 'center',
                                          'bold': True,
                                          'font_size': '18px',
@@ -167,6 +174,7 @@ class SubscriptionReport(models.TransientModel):
                                            'right': 1,
                                            'border_color': '#000000'})
         if is_partner == 'true':
+            # create multiple table if user need customer wise report
             partner_ids = list(set(rec.get('partner_id')[0] for rec in data))
             row = 4
             col = 0
@@ -188,6 +196,7 @@ class SubscriptionReport(models.TransientModel):
                 sheet.write(row, 4, 'Total Credit Applied', head)
                 sheet.write(row, 5, 'State', head)
                 for line in subscription:
+                    # write records based on customer
                     sheet.write(row + 1, col, sl_no, cell_format)
                     sheet.write(row + 1, col + 1, line.get('order'),
                                 cell_format)
@@ -199,12 +208,13 @@ class SubscriptionReport(models.TransientModel):
                                 cell_format)
                     sheet.write(row + 1, col + 5, dict(self.subscription_ids.
                                                        _fields[
-                                                           'state'].selection).get(
-                        line.get('state')), cell_format)
+                                                           'state'].selection).
+                                get(line.get('state')), cell_format)
                     row += 1
                     sl_no += 1
                 row += 3
         else:
+            # create a single table with all customers data
             sheet.merge_range('A1:G2', 'Subscription Report', main_head)
             sheet.set_column(1, 2, 15)
             sheet.set_column(3, 3, 20)
@@ -219,6 +229,7 @@ class SubscriptionReport(models.TransientModel):
             row = 3
             col = 0
             for line in data:
+                # write records to xlsx
                 sheet.write(row, col, row - 2, cell_format)
                 sheet.write(row, col + 1, line.get('order'), cell_format)
                 sheet.write(row, col + 2, line.get('partner_id')[1],
@@ -230,8 +241,8 @@ class SubscriptionReport(models.TransientModel):
                 sheet.write(row, col + 5, line.get('credit_amount'),
                             cell_format)
                 sheet.write(row, col + 6, dict(self.subscription_ids.
-                                               _fields['state'].selection).get(
-                    line.get('state')), cell_format)
+                                               _fields['state'].selection).
+                            get(line.get('state')), cell_format)
                 row += 1
         workbook.close()
         output.seek(0)
