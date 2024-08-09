@@ -10,11 +10,10 @@ except ImportError:
     import xlsxwriter
 
 
-class SubscriptionReport(models.TransientModel):
+class CreditReport(models.TransientModel):
+    """ Generate credit report in custom filters"""
     _name = 'credit.report'
     _description = 'Credit Report'
-
-    """ Wizard for printing report of credits with or without filter """
 
     subscription_ids = fields.Many2many("recurring.subscription")
     state = fields.Selection(selection=[('pending', 'Pending'),
@@ -24,7 +23,7 @@ class SubscriptionReport(models.TransientModel):
                                         ('rejected', 'Rejected')])
 
     def action_print_xlsx(self):
-        # create and print report in xlsx format
+        """Create and print report in xlsx format"""
         result = self._get_credits()
         credit = self.subscription_ids.credit_ids
         if not credit:
@@ -47,7 +46,7 @@ class SubscriptionReport(models.TransientModel):
         }
 
     def action_print_pdf(self):
-        # print credit report in PDF format
+        """print credit report in PDF format"""
         result = self._get_credits()
         data = {'date': self.read()[0], 'report': result}
         return (self.env.ref(
@@ -55,7 +54,7 @@ class SubscriptionReport(models.TransientModel):
             None, data))
 
     def _get_credits(self):
-        # compute credits based on selected subscriptions
+        """fetch credits from database based on defined conditions"""
         query = """
         SELECT recurring_subscription_credit.id AS id,
         recurring_subscription_credit.subscription_id AS subscription_id ,
@@ -79,10 +78,11 @@ class SubscriptionReport(models.TransientModel):
         return result
 
     def get_xlsx_report(self, data, response):
-        # write data to xlsx file
+        """write data to xlsx file"""
         output = io.BytesIO()
         workbook = xlsxwriter.Workbook(output, {'in_memory': True})
         sheet = workbook.add_worksheet()
+        # add format for heading,table cells etc...
         main_head = workbook.add_format({'align': 'center',
                                          'bold': True,
                                          'font_size': '18px',
@@ -119,8 +119,10 @@ class SubscriptionReport(models.TransientModel):
         row = 3
         col = 0
         for line in data:
+            # write each record of data in rows
             sheet.write(row, col, row-2, cell_format)
-            sheet.write(row, col + 1, line.get('subscription_id')[1], cell_format)
+            sheet.write(row, col + 1, line.get('subscription_id')[1],
+                        cell_format)
             sheet.write(row, col + 2, line.get('partner_id')[1], cell_format)
             sheet.write(row, col + 3, line.get('credit_amount'), cell_format)
             sheet.write(row, col + 4, line.get('amount_pending'), cell_format)
@@ -132,7 +134,3 @@ class SubscriptionReport(models.TransientModel):
         output.seek(0)
         response.stream.write(output.read())
         output.close()
-
-
-
-

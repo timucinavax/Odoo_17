@@ -20,11 +20,13 @@
                     <t t-if="is_partner">
                         <t t-foreach="docs.partner_id" t-as="doc">
                             <t t-set="subscription"
-                               t-value="docs.filtered(lambda s: s.partner_id == doc)"/>
+                               t-value="docs.filtered(
+                               lambda s: s.partner_id == doc)"/>
                             <span style="font-size: 24px;">
                                 <t t-out="doc.name"/>
                             </span>
-                            <table class="table table-sm o_main_table table-borderless mt-4">
+                            <table class="table table-sm o_main_table
+                            table-borderless mt-4">
                                 <thead style="display: table-row-group">
                                     <tr>
                                         <th class="text-start">SL.No</th>
@@ -49,10 +51,14 @@
                                             <span t-field="sub.product_id"/>
                                         </td>
                                         <td class="text-end">
-                                            <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.recurring_amount)"/>
+                                            <span t-out="'%s%.1f'%(
+                                            docs.company_id.currency_id.symbol,
+                                            sub.recurring_amount)"/>
                                         </td>
                                         <td class="text-end">
-                                            <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.credit_amount)"/>
+                                            <span t-out="'%s%.1f'%(
+                                            docs.company_id.currency_id.symbol,
+                                            sub.credit_amount)"/>
                                         </td>
                                         <td>
                                             <span t-field="sub.state"/>
@@ -63,7 +69,8 @@
                         </t>
                     </t>
                     <t t-else="">
-                        <table class="table table-sm o_main_table table-borderless mt-4">
+                        <table class="table table-sm o_main_table
+                        table-borderless mt-4">
                             <thead style="display: table-row-group">
                                 <tr>
                                     <th class="text-start">SL.No</th>
@@ -92,10 +99,14 @@
                                         <span t-field="sub.product_id"/>
                                     </td>
                                     <td class="text-end">
-                                        <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.recurring_amount)"/>
+                                        <span t-out="'%s%.1f'%(
+                                        docs.company_id.currency_id.symbol,
+                                        sub.recurring_amount)"/>
                                     </td>
                                     <td class="text-end">
-                                        <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,sub.credit_amount)"/>
+                                        <span t-out="'%s%.1f'%(
+                                        docs.company_id.currency_id.symbol,
+                                        sub.credit_amount)"/>
                                     </td>
                                     <td>
                                         <span t-field="sub.state"/>
@@ -105,7 +116,9 @@
                         </table>
                     </t>
                     <p>
-                        <span t-out="docs.search([('company_id', 'in',data.get('context').get('allowed_company_ids'))],order='create_date desc', limit=1).terms"/>
+                        <span t-out="docs.search([('company_id', 'in',
+                        data.get('context').get('allowed_company_ids'))],
+                        order='create_date desc', limit=1).terms"/>
                     </p>
                 </div>
             </t>
@@ -123,7 +136,8 @@
                             </center>
                         </span>
                     </h2>
-                    <table class="table table-sm o_main_table table-borderless mt-4">
+                    <table class="table table-sm o_main_table
+                    table-borderless mt-4">
                         <thead style="display: table-row-group">
                             <tr>
                                 <th class="text-start">SL.No</th>
@@ -146,10 +160,14 @@
                                     <span t-field="credit.partner_id"/>
                                 </td>
                                 <td class="text-end">
-                                    <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,credit.credit_amount)"/>
+                                    <span t-out="'%s%.1f'%(
+                                    docs.company_id.currency_id.symbol,
+                                    credit.credit_amount)"/>
                                 </td>
                                 <td class="text-end">
-                                    <span t-out="'%s%.1f'%(docs.company_id.currency_id.symbol,credit.amount_pending)"/>
+                                    <span t-out="'%s%.1f'%(
+                                    docs.company_id.currency_id.symbol,
+                                    credit.amount_pending)"/>
                                 </td>
                                 <td>
                                     <span t-field="credit.state"/>

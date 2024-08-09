@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="subscription_data" name="Subscription Details">
+        <t t-call="portal.portal_layout">
+            <div>
+                <h2>
+                    <center>
+                        <span>Subscriptions</span>
+                    </center>
+                </h2>
+            </div>
+            <table class="table table-striped">
+                <thead style="font-size:23px">
+                    <tr>
+                        <th>Subscription</th>
+                        <th>Customer</th>
+                        <th>Product</th>
+                        <th>Due Date</th>
+                        <th>Amount</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="record" t-as="rec">
+                        <tr>
+                            <td>
+                                <span t-field="rec.order"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.partner_id"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.product_id"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.due_date"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.recurring_amount"/>
+                            </td>
+                            <td>
+                                <span t-field="rec.state"/>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </t>
+    </template>
+    <template id="subscription_form" name="Subscription Form">
+        <t t-call="website.layout">
+            <t t-set="partner" t-value="request.env['website.visitor']._get_visitor_from_request().partner_id"/>
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-8 mt-4 mt-lg-0">
+                                <section class="s_website_form" data-vcss="001" data-snippet="s_website_form">
+                                    <div class="container">
+                                        <form id="subscriptions_form" action="/my/rec_subscription/" method="post" class="o_mark_required" data-mark="*" data-pre-fill="true">
+                                            <div class="s_website_form_rows row s_col_no_bgcolor">
+                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="char" data-name="Field">
+                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact1">
+                                                            <span class="s_website_form_label_content">Name</span>
+                                                            <span class="s_website_form_mark"> *</span>
+                                                        </label>
+                                                        <div class="col-sm">
+                                                           <input id="contact1" type="text" class="form-control s_website_form_input" name="name" required="True" data-fill-with="name"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom" data-type="char" data-name="Field">
+                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact2">
+                                                            <span class="s_website_form_label_content">Product</span>
+                                                        </label>
+                                                        <div class="col-sm">
+                                                            <select id="contact2" type="tel" class="form-control s_website_form_input" name="product_id">
+                                                                <t t-foreach="products" t-as="product">
+                                                                    <option t-att-value="product.id" t-esc="product.name"/>
+                                                                </t>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom" data-type="char" data-name="Field">
+                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact4">
+                                                            <span class="s_website_form_label_content">Recurring Amount</span>
+                                                        </label>
+                                                        <div class="col-sm">
+                                                            <input id="contact4" type="text" class="form-control s_website_form_input" name="company" data-fill-with="commercial_company_name"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_required s_website_form_model_required" data-type="email" data-name="Field">
+                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact3">
+                                                            <span class="s_website_form_label_content">Email</span>
+                                                            <span class="s_website_form_mark"> *</span>
+                                                        </label>
+                                                        <div class="col-sm">
+                                                            <input id="contact3" type="email" class="form-control s_website_form_input" name="email_from" required="" data-fill-with="email"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required" data-type="text" data-name="Field">
+                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="contact6">
+                                                            <span class="s_website_form_label_content">Description</span>
+                                                            <span class="s_website_form_mark"> *</span>
+                                                        </label>
+                                                        <div class="col-sm">
+                                                            <textarea id="contact6" class="form-control s_website_form_input" name="description" required=""></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-0 py-2 col-12 s_website_form_submit" data-name="Submit Button">
+                                                    <div style="width: 200px;" class="s_website_form_label"/>
+                                                    <a href="" role="button" class="btn btn-primary s_website_form_send">Submit</a>
+                                                    <span id="s_website_form_result"> </span>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="col-lg-4 mt-4 mt-lg-0">
+                                <ul class="list-unstyled mb-0 ps-2">
+                                    <li><i class="fa fa-map-marker fa-fw me-2"/><span class="o_force_ltr" t-out="company_id.company_details"> </span></li>
+                                    <li><i class="fa fa-phone fa-fw me-2"/><span class="o_force_ltr" t-out="company_id.phone"> </span></li>
+                                    <li><i class="fa fa-1x fa-fw fa-envelope me-2"/><span t-out="company_id.email"> </span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>
