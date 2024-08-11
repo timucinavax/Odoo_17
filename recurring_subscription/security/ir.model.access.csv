@@ -3,6 +3,7 @@ access_recurring_subscription_credit_users,access.recurring.subscription.credit.
 access_billing_schedule_users,access.billing.schedule.users,model_billing_schedule,base.group_user,1,1,1,1
 access_partner_account_users,access.partner.account.users,model_partner_account,base.group_user,1,1,1,1
 access_recurring_subscription_user,access.recurring.subscription.user,model_recurring_subscription,group_user,1,0,1,0
+access_recurring_subscription_user_portal,access.recurring.subscription.user.portal,model_recurring_subscription,base.group_portal,1,0,1,0
 access_recurring_subscription_manager,access.recurring.subscription.manager,model_recurring_subscription,group_manager,1,1,1,1
 access_recurring_subscription_report_user,access.recurring.subscription.report.user,model_subscription_report,base.group_user,1,1,1,1
 access_recurring_credit_report_user,access.recurring.credit.report.user,model_credit_report,base.group_user,1,1,1,1

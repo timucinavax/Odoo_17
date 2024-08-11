@@ -10,7 +10,8 @@
         'crm',
         'sale',
         'account',
-        'web'
+        'web',
+        'website'
     ],
     'data': [
         'security/res_groups.xml',

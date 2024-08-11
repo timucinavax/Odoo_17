@@ -4,6 +4,7 @@ from odoo.http import request
 
 class RecurringSubscription(http.Controller):
     """ Website view of recurring subscription"""
+
     @http.route('/my/rec_subscription', type='http', auth="user", website=True)
     def view_recurring_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
@@ -24,24 +25,32 @@ class RecurringSubscription(http.Controller):
         return request.render(
             "recurring_subscription.subscription_data", values)
 
-    @http.route('/my/rec_subscription/create', type='http', auth='user', website=True)
+    @http.route('/my/rec_subscription/new', type='http', auth="user",
+                website=True)
+    def view_recurring_subscription(self, **kwargs):
+        """View recurring subscriptions of logged user"""
+        uid = request.session.uid
+        print(uid)
+        return request.render(
+            "recurring_subscription.subscription_form")
+
+    @http.route('/my/rec_subscription/create', type='http', auth='user',
+                website=True, csrf=False)
     def recurring_subscription_create_form(self, **post):
         """Create new subscription from portal"""
         uid = request.session.uid
-        # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
+        print(uid)
+        print(request.env['website.visitor'].
+            _get_visitor_from_request().partner_id.establishment)
         record = {
-            'establishment': request.env['website.visitor']._get_visitor_from_request().partner_id.establishment,
-            'partner_id': request.env['website.visitor']._get_visitor_from_request().partner_id,
+            'establishment': request.env['website.visitor'].
+            _get_visitor_from_request().partner_id.establishment,
+            'partner_id': request.env['website.visitor'].
+            _get_visitor_from_request().partner_id.id,
             'description': post.get('description'),
-            'product_id': post.get('product_id'),
+            'product_id': int(post.get('product_id')),
             'recurring_amount': post.get('recurring_amount')
         }
-        values = {
-            'products': request.env['product.product'].sudo().search([]),
-            'company_id': request.env.company
-        }
         print(record.get('establishment'))
-        print(request.env.company.name)
-        return request.render('recurring_subscription.subscription_form', values)
-
-
+        request.env['recurring.subscription'].create(record)
+        return request.redirect('/my/rec_subscription')
