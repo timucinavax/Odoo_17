@@ -1,4 +1,5 @@
 from odoo import http
+from odoo.exceptions import UserError
 from odoo.http import request
 
 
@@ -6,7 +7,7 @@ class RecurringSubscription(http.Controller):
     """ Website view of recurring subscription"""
 
     @http.route('/my/rec_subscription', type='http', auth="user", website=True)
-    def view_recurring_subscription(self, **kwargs):
+    def portal_my_rec_subscriptions(self, **kwargs):
         """View recurring subscriptions of logged user"""
         uid = request.session.uid
         # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
@@ -25,23 +26,21 @@ class RecurringSubscription(http.Controller):
         return request.render(
             "recurring_subscription.subscription_data", values)
 
-    @http.route('/my/rec_subscription/new', type='http', auth="user",
+    @http.route('/rec_subscription/new', type='http', auth="user",
                 website=True)
-    def view_recurring_subscription(self, **kwargs):
+    def portal_new_rec_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
         uid = request.session.uid
         print(uid)
         return request.render(
             "recurring_subscription.subscription_form")
 
-    @http.route('/my/rec_subscription/create', type='http', auth='user',
+    @http.route('/rec_subscription/create', type='http', auth='user',
                 website=True, csrf=False)
-    def recurring_subscription_create_form(self, **post):
+    def portal_create_rec_subscription(self, **post):
         """Create new subscription from portal"""
         uid = request.session.uid
         print(uid)
-        print(request.env['website.visitor'].
-            _get_visitor_from_request().partner_id.establishment)
         record = {
             'establishment': request.env['website.visitor'].
             _get_visitor_from_request().partner_id.establishment,
@@ -49,8 +48,9 @@ class RecurringSubscription(http.Controller):
             _get_visitor_from_request().partner_id.id,
             'description': post.get('description'),
             'product_id': int(post.get('product_id')),
-            'recurring_amount': post.get('recurring_amount')
+            # 'recurring_amount': post.get('recurring_amount')
         }
-        print(record.get('establishment'))
-        request.env['recurring.subscription'].create(record)
+        if not record.get('establishment'):
+            raise UserError("You do not have a Establishment ID...!")
+        request.env['recurring.subscription'].sudo().create(record)
         return request.redirect('/my/rec_subscription')

@@ -54,7 +54,7 @@
             <t t-set="products"
                t-value="request.env['product.product'].sudo().search([])"/>
             <div class="container">
-                <form action="/my/rec_subscription/create" method="post">
+                <form action="/rec_subscription/create" method="post">
                     <br/>
                     <div class="form-group">
                         <input name="partner_id" class="form-control"
@@ -66,20 +66,34 @@
                         <select name="product_id" class="form-control">
                             <t t-foreach="products" t-as="product">
                                 <option t-att-value="product.id"
-                                        t-esc="product.name" t-att-data-price="product.list_price"/>
+                                        t-esc="product.name"
+                                        t-att-data-price="product.list_price"/>
                             </t>
                         </select>
                     </div>
                     <br/>
-<!--                    <div class="form-group">-->
-<!--                        <input type="text" class="form-control" name="price" data-fill-with="price"/>-->
-<!--                    </div>-->
+                    <!--                    <div class="form-group">-->
+                    <!--                        <input type="text" class="form-control" name="price" data-fill-with="price"/>-->
+                    <!--                    </div>-->
                     <br/>
                     <div class="form-group">
-                        <button class="form-control btn btn-primary" type="submit">Create</button>
+                        <button class="form-control btn btn-primary"
+                                type="submit">Create
+                        </button>
                     </div>
                 </form>
             </div>
         </t>
     </template>
+<!--    <template id="subscription_menu" name="Subscription Menu" inherit_id="web.layout">-->
+<!--        <xpath expr="//ul[hasclass('top_menu')]" position="after">-->
+<!--            <li>Sub</li>-->
+<!--        </xpath>-->
+<!--    </template>-->
+    <record id="menu_subscription" model="website.menu">
+            <field name="name">Subscriptions</field>
+            <field name="url">/my/rec_subscription</field>
+<!--            <field name="page_id" ref="recurring_subscription.subscription_data"/>-->
+            <field name="parent_id" ref="website.main_menu"/>
+        </record>
 </odoo>

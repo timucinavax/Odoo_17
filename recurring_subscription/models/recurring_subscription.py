@@ -59,7 +59,6 @@ class RecurringSubscription(models.Model):
     @api.depends('credit_ids')
     def _compute_credit_amount(self):
         # compute the total amount credited for the subscription
-        print('compute')
         for rec in self:
             rec.credit_amount = 0.00
             rec.update({
