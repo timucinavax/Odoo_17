@@ -45,6 +45,10 @@
                     </t>
                 </tbody>
             </table>
+
+            <a href="/rec-subscription/new">
+                <button class="btn-primary form-control">Create</button>
+            </a>
         </t>
     </template>
     <template id="subscription_form" name="Subscription Form">
@@ -54,12 +58,12 @@
             <t t-set="products"
                t-value="request.env['product.product'].sudo().search([])"/>
             <div class="container">
-                <form action="/rec_subscription/create" method="post">
+                <form action="/rec-subscription/create" method="post">
                     <br/>
                     <div class="form-group">
                         <input name="partner_id" class="form-control"
                                type="text" placeholder="Name"
-                               t-att-value="partner.name"/>
+                               t-att-value="partner.id"/>
                     </div>
                     <br/>
                     <div class="form-group">
@@ -85,15 +89,37 @@
             </div>
         </t>
     </template>
-<!--    <template id="subscription_menu" name="Subscription Menu" inherit_id="web.layout">-->
-<!--        <xpath expr="//ul[hasclass('top_menu')]" position="after">-->
-<!--            <li>Sub</li>-->
+<!--    <template id="menu_subscription" inherit_id="website.layout">-->
+<!--        <xpath expr="//div[@id='o_main_nav']" position="inside">-->
+<!--            <ul>-->
+<!--                <li class="dropdown">-->
+<!--                    <a class="dropdown-toggle btn" data-bs-toggle="dropdown" href="#">Subscriptions</a>-->
+<!--                    <ul class="dropdown">-->
+<!--                        <li>-->
+<!--                            <a href="/rec-subscription">Subscription</a>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <a href="/rec-subscription/credit">Credit</a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+<!--            </ul>-->
 <!--        </xpath>-->
 <!--    </template>-->
-    <record id="menu_subscription" model="website.menu">
-            <field name="name">Subscriptions</field>
-            <field name="url">/my/rec_subscription</field>
-<!--            <field name="page_id" ref="recurring_subscription.subscription_data"/>-->
-            <field name="parent_id" ref="website.main_menu"/>
+        <record id="menu_subscription" model="website.menu">
+            <field name="name">Subscription</field>
+            <field name="url"/>
+            <field name="parent_id" search="[('parent_id','=',False),('website_id','=', 1)]"/>
+    <!--        <field name="parent_id" ref="website.main_menu"/>-->
+        </record>
+        <record id="rec_subscription" model="website.menu">
+            <field name="name">Subscription</field>
+            <field name="url">/rec-subscription</field>
+            <field name="parent_id" ref="recurring_subscription.menu_subscription"/>
+        </record>
+        <record id="rec_subscription_credit" model="website.menu">
+            <field name="name">Credits</field>
+            <field name="url">/rec-subscription/credit</field>
+            <field name="parent_id" ref="recurring_subscription.menu_subscription"/>
         </record>
 </odoo>
