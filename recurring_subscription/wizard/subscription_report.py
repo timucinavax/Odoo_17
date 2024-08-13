@@ -63,7 +63,7 @@ class SubscriptionReport(models.TransientModel):
           recurring_subscription.company_id in %s"""
         params = [tuple(self.env.company.ids)]
         if self.subscription_ids:
-            query += ' AND rid in %s'
+            query += ' AND recurring_subscription.id in %s'
             params.append(tuple(self.subscription_ids.ids))
         elif self.frequency:
             self.subscription_ids = False

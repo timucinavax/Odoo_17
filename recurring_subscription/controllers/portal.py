@@ -89,21 +89,19 @@ class RecurringSubscription(http.Controller):
                 website=True, csrf=False)
     def portal_create_rec_subscription(self, **post):
         """Create new subscription from portal"""
-        print(post.get('product_id'))
-        uid = request.session.uid
-        partner = request.env['res.users'].search([('id', '=', uid)]).partner_id
         record = {
-            'establishment': partner.establishment,
-            'partner_id': partner.id,
+            'establishment': request.env['res.partner'].sudo().browse(int(post.get('partner_id'))).establishment,
+            'partner_id': int(post.get('partner_id')),
             'description': post.get('description'),
             'product_id': int(post.get('product_id')),
             'date': post.get('date'),
             'due_date': post.get('due_date')
             # 'recurring_amount': post.get('recurring_amount')
         }
+        print(record)
         if not record.get('establishment'):
             raise UserError("You do not have a Establishment ID...!")
-        request.env['recurring.subscription'].sudo().create(record)
+        # request.env['recurring.subscription'].sudo().create(record)
         return request.redirect('/rec-subscription')
 
     @http.route('/rec-subscription/credit/create', type='http',
