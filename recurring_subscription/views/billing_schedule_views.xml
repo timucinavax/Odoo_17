@@ -9,7 +9,7 @@
                     <button id="action_create_invoices"
                             name="action_create_invoices"
                             string="Create Invoice" type="object"
-                            class="btn-primary" data-hotkey="q"
+                            class="btn-primary"
                             invisible="subscription_count == 0"/>
                 </header>
                 <sheet>

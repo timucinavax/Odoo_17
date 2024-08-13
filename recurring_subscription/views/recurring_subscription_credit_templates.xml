@@ -2,10 +2,17 @@
 <odoo>
     <template id="credit_data" name="Subscription Credit Details">
         <t t-call="portal.portal_layout">
+            <div class="mb-0 py-2 col-12 s_website_form_submit"
+                 data-name="Submit Button">
+                <div style="width: 200px;" class="s_website_form_label"/>
+                <a href="/rec-subscription/credit/new"
+                   class="btn btn-primary s_website_form_send">Create
+                </a>
+            </div>
             <div>
                 <h2>
                     <center>
-                        <span>Credit</span>
+                        <span>Subscription Credit</span>
                     </center>
                 </h2>
             </div>
@@ -24,7 +31,9 @@
                     <t t-foreach="record" t-as="rec">
                         <tr>
                             <td>
-                                <span t-field="rec.subscription_id"/>
+                                <a t-attf-href="/rec-subscription/credit/#{rec.id}">
+                                    <span t-field="rec.subscription_id"/>
+                                </a>
                             </td>
                             <td>
                                 <span t-field="rec.partner_id"/>
@@ -45,49 +54,239 @@
                     </t>
                 </tbody>
             </table>
-            <a href="/rec-subscription/credit/new">
-                <button class="btn-primary form-control">Create</button>
-            </a>
         </t>
     </template>
     <template id="credit_form" name="Credit Form">
         <t t-call="website.layout">
-            <t t-set="subscriptions"
-               t-value="request.env['recurring.subscription'].sudo().search([])"/>
-            <div class="container">
-                <form action="/rec-subscription/credit/create" method="post">
-                    <br/>
-                    <br/>
-                    <div class="form-group">
-                        <select name="subscription_id" class="form-control" >
-                            <t t-foreach="subscriptions" t-as="subscription">
-                                <option t-att-value="subscription.id"
-                                        t-esc="subscription.order"/>
-                            </t>
-                        </select>
+            <t t-if="request.env.user.has_group('base.group_portal')">
+                <t t-set="subscriptions"
+                   t-value="request.env['recurring.subscription'].sudo().search([('partner_id','=',request.env.user.partner_id.id)])"/>
+            </t>
+            <t t-else="">
+                <t t-set="subscriptions"
+                   t-value="request.env['recurring.subscription'].sudo().search([])"/>
+            </t>
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level ">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-8 mt-4 mt-lg-0">
+                                <section class="container">
+                                    <form action="/rec-subscription/credit/create"
+                                          method="post">
+                                        <div class="s_website_form_rows row s_col_no_bgcolor">
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                                           style="width: 200px"
+                                                           for="subscription_id">
+                                                        Subscription :
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <select name="subscription_id"
+                                                                class="form-control">
+                                                            <t t-foreach="subscriptions"
+                                                               t-as="subscription">
+                                                                <option t-att-value="subscription.id"
+                                                                        t-esc="subscription.order"/>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                                           style="width: 200px"
+                                                           for="credit_amount">
+                                                        <span class="s_website_form_label_content">
+                                                            Credit Amount
+                                                        </span>
+                                                        <span class="s_website_form_mark">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <input name="credit_amount"
+                                                               type="number"
+                                                               step="0.01"
+                                                               class="form-control"
+                                                               required="True"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                                           style="width: 200px"
+                                                           for="start_date">
+                                                        <span class="s_website_form_label_content">
+                                                            Start Date
+                                                        </span>
+                                                        <span class="s_website_form_mark">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <input name="start_date"
+                                                               type="date"
+                                                               class="form-control"
+                                                               data-date-format="yyyy-MM-dd"
+                                                               required="True"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label"
+                                                           style="width: 200px"
+                                                           for="end_date">End
+                                                        <span class="s_website_form_label_content">
+                                                            End Date
+                                                        </span>
+                                                        <span class="s_website_form_mark">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <input name="end_date"
+                                                               type="date"
+                                                               class="form-control"
+                                                               data-date-format="yyyy-MM-dd"
+                                                               required="True"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <div style="width: 200px;">
+                                                        <button class="form-control btn btn-primary"
+                                                                type="submit">
+                                                            Create
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
                     </div>
-                    <br/>
-                    <div class="form-group">
-                        <input name="credit_amount" type="number" step="0.01" placeholder="Credit Amount" class="form-control"/>
+                </section>
+            </div>
+        </t>
+    </template>
+    <template id="credit_details" name="Credit Details">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_text_block pt40 pb40 o_colored_level "
+                         data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
+                        <div class="row">
+                            <div class="col-lg-8 mt-4 mt-lg-0">
+                                <div id="content">
+                                    <div id="informations" class="row">
+                                        <!-- Information -->
+                                        <div id="credit_info"
+                                             class="col-12 col-lg-6 mb-4">
+                                            <span id="credit_info_title">
+                                                <h4 class="mb-1">Subscription
+                                                    Credit Information
+                                                </h4>
+                                                <hr class="mt-1 mb-2"/>
+                                            </span>
+                                            <table class="table table-borderless table-sm">
+                                                <tbody style="white-space:nowrap"
+                                                       id="sale_info_table">
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">
+                                                            Subscription :
+                                                        </th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <a t-attf-href="/rec-subscription/#{credit.subscription_id.id}">
+                                                                <span t-field="credit.subscription_id"/>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="credit.start_date">
+                                                        <th class="ps-0 pb-0">
+                                                            Start Date :
+                                                        </th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="credit.start_date"
+                                                                  t-options='{"widget": "date"}'/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="credit.end_date">
+                                                        <th class="ps-0 pb-0">
+                                                            End Date:
+                                                        </th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="credit.end_date"
+                                                                  t-options='{"widget": "date"}'/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">
+                                                            Customer Name:
+                                                        </th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="credit.subscription_id.partner_id"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">
+                                                            Establishment:
+                                                        </th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="credit.subscription_id.establishment"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <section id="details"
+                                                 style="page-break-inside: auto;">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm"
+                                                       id="credit_order_table">
+                                                    <thead class="bg-100">
+                                                        <tr>
+                                                            <th class="text-start"
+                                                                id="product_name_header">
+                                                                Product
+                                                            </th>
+                                                            <th class="text-end"
+                                                                id="subtotal_header">
+                                                                <span>Credit
+                                                                    Amount
+                                                                </span>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="sale_tbody">
+                                                        <tr>
+                                                            <td id="product_name">
+                                                                <span t-field="credit.subscription_id.product_id"/>
+                                                            </td>
+                                                            <td class="text-end"
+                                                                id="subtotal">
+                                                                <span class="oe_order_line_price_subtotal"
+                                                                      t-field="credit.credit_amount"/>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <br/>
-                    <div class="form-group">
-                        <input name="start_date" type="date" class="form-control s_website_form_date" data-date-format="yyyy-MM-dd" required="True"/>
-                    </div>
-                    <div class="form-group">
-                        <input name="end_date" type="date" class="form-control s_website_form_date" data-date-format="yyyy-MM-dd" required="True"/>
-                    </div>
-                    <br/>
-                    <!--                    <div class="form-group">-->
-                    <!--                        <input type="text" class="form-control" name="price" data-fill-with="price"/>-->
-                    <!--                    </div>-->
-                    <br/>
-                    <div class="form-group">
-                        <button class="form-control btn btn-primary"
-                                type="submit">Create
-                        </button>
-                    </div>
-                </form>
+                </section>
             </div>
         </t>
     </template>

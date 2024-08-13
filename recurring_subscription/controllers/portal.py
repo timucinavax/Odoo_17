@@ -19,13 +19,24 @@ class RecurringSubscription(http.Controller):
             subscriptions = request.env['recurring.subscription'].sudo().search(
                 [('partner_id', '=', uid.partner_id.id)])
         else:
-            subscriptions = request.env['recurring.subscription'].search(
+            subscriptions = request.env['recurring.subscription'].sudo().search(
                 [('create_uid', '=', uid)])
         values = {
             'record': subscriptions,
         }
         return request.render(
             "recurring_subscription.subscription_data", values)
+
+    @http.route(
+        '/rec-subscription/<model("recurring.subscription"):subscription_id>',
+        type='http', auth="user",
+        website=True)
+    def subscription_details(self, subscription_id):
+        values = {
+            'subscription': subscription_id
+        }
+        return request.render('recurring_subscription.subscription_details',
+                              values)
 
     @http.route('/rec-subscription/credit', type='http', auth="user",
                 website=True)
@@ -40,13 +51,23 @@ class RecurringSubscription(http.Controller):
             credit = request.env['recurring.subscription.credit'].sudo().search(
                 [('subscription_id.partner_id', '=', uid.partner_id.id)])
         else:
-            credit = request.env['recurring.subscription.credit'].search(
+            credit = request.env['recurring.subscription.credit'].sudo().search(
                 [('create_uid', '=', uid)])
         values = {
             'record': credit,
         }
         return request.render(
             "recurring_subscription.credit_data", values)
+
+    @http.route(
+        '/rec-subscription/credit/<model("recurring.subscription.credit"):credit_id>',
+        type='http', auth="user", website=True)
+    def credit_details(self, credit_id):
+        values = {
+            'credit': credit_id
+        }
+        return request.render('recurring_subscription.credit_details',
+                              values)
 
     @http.route('/rec-subscription/new', type='http', auth="user",
                 website=True)
@@ -76,6 +97,8 @@ class RecurringSubscription(http.Controller):
             'partner_id': partner.id,
             'description': post.get('description'),
             'product_id': int(post.get('product_id')),
+            'date': post.get('date'),
+            'due_date': post.get('due_date')
             # 'recurring_amount': post.get('recurring_amount')
         }
         if not record.get('establishment'):
@@ -95,3 +118,15 @@ class RecurringSubscription(http.Controller):
         }
         request.env['recurring.subscription.credit'].sudo().create(record)
         return request.redirect('/rec-subscription/credit')
+
+    @http.route(
+        '/rec-subscription/billing-schedule/<model("recurring.subscription"):subscription_id>',
+        type='http',
+        auth='user', website=True, csrf=False)
+    def portal_run_billing_schedule(self, subscription_id):
+        subscription = request.env['recurring.subscription'].browse(
+            subscription_id.id)
+        subscription.billing_schedule_id.with_context(
+            active_ids=subscription).action_create_invoices()
+
+        return "Created invoices successfully"

@@ -79,7 +79,11 @@ class BillingSchedule(models.Model):
 
     def action_create_invoices(self):
         # create invoice with credits
-        for rec in self.subscription_ids:
+        if self.subscription_ids._context.get('active_ids'):
+            subscriptions = self.subscription_ids._context.get('active_ids')
+        else:
+            subscriptions = self.subscription_ids
+        for rec in subscriptions:
             self.invoice_ids.create({
                 'move_type': 'out_invoice',
                 'subscription_id': rec.id,

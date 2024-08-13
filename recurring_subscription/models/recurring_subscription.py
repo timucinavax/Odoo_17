@@ -103,18 +103,18 @@ class RecurringSubscription(models.Model):
         print(self)
         # create an invoice for all subscriptions which in the confirmed state
         # and due date is less than today date
-        # for rec in self.search([]):
-        #     if rec.due_date < date.today() and rec.state == 'confirm':
-        #         rec.account_move_ids.create({
-        #             'move_type': 'out_invoice',
-        #             'subscription_id': rec.id,
-        #             'partner_id': rec.partner_id.id,
-        #             'currency_id': rec.currency_id.id,
-        #             'invoice_date': date.today(),
-        #             'invoice_line_ids': [
-        #                 (0, 0, {
-        #                     'product_id': rec.product_id.id,
-        #                     'price_unit': rec.recurring_amount
-        #                 })
-        #             ]
-        #         })
+        for rec in self.search([]):
+            if rec.due_date < date.today() and rec.state == 'confirm':
+                rec.account_move_ids.create({
+                    'move_type': 'out_invoice',
+                    'subscription_id': rec.id,
+                    'partner_id': rec.partner_id.id,
+                    'currency_id': rec.currency_id.id,
+                    'invoice_date': date.today(),
+                    'invoice_line_ids': [
+                        (0, 0, {
+                            'product_id': rec.product_id.id,
+                            'price_unit': rec.recurring_amount
+                        })
+                    ]
+                })

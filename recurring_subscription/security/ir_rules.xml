@@ -8,19 +8,10 @@
         </field>
     </record>
     <!-- User own subscriptions -->
-    <record id="subscription_user_rule" model="ir.rule">
-        <field name="name">Subscription Created User</field>
-        <field name="model_id" ref="model_recurring_subscription"/>
-        <field name="domain_force">[('create_uid', '=', user.id)]
-        </field>
-    </record>
-    <record id="subscription_admin_rule" model="ir.rule">
-        <field name="name">Subscription User Admin</field>
-        <field name="model_id" ref="model_recurring_subscription"/>
-        <field name="groups" eval="[Command.link(ref('base.group_erp_manager'))]"/>
-        <field name="perm_read" eval="True"/>
-        <field name="perm_write" eval="True"/>
-        <field name="perm_create" eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-    </record>
+<!--    <record id="subscription_user_rule" model="ir.rule">-->
+<!--        <field name="name">Subscription Created User</field>-->
+<!--        <field name="model_id" ref="model_recurring_subscription"/>-->
+<!--        <field name="domain_force">[('create_uid', '=', user.id)]-->
+<!--        </field>-->
+<!--    </record>-->
 </odoo>
