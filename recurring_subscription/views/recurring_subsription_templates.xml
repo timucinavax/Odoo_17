@@ -65,88 +65,88 @@
                     <div class="container s_allow_columns">
                         <div class="row">
                             <div class="col-lg-8 mt-4 mt-lg-0">
-                                    <section class="container">
-                                        <form action="/rec-subscription/create" method="post">
-                                            <div class="s_website_form_rows row s_col_no_bgcolor">
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="partner_id">
-                                                            <span class="s_website_form_label_content">Name</span>
-                                                            <span class="s_website_form_mark">*</span>
-                                                        </label>
-                                                        <div class="col-sm">
-                                                            <t t-if="request.env.user.has_group('recurring_subscription.group_manager')">
-                                                                <t t-set="partners" t-value="request.env['res.partner'].sudo().search([])"/>
-                                                                <select name="partner_id" id="partner_id" class="form-control">
-                                                                    <t t-foreach="partners" t-as="partner">
-                                                                        <option t-att-value="partner.id" t-esc="partner.name"/>
-                                                                    </t>
-                                                                </select>
-                                                            </t>
-                                                            <t t-else="">
-                                                            <t t-set="partner" t-value="request.env['website.visitor']._get_visitor_from_request().partner_id"/>
-                                                            <input name="partner_id" class="form-control" type="text" placeholder="Name" t-att-value="partner.id" hidden="True"/>
-                                                            <input name="partner_name" class="form-control" type="text" placeholder="Name" t-att-value="partner.name"/>
-                                                            </t>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="product_id">
-                                                            <span class="s_website_form_label_content">Product
-                                                            </span>
-                                                        </label>
-                                                        <div class="col-sm">
-                                                            <select name="product_id" class="form-control">
-                                                                <t t-foreach="products" t-as="product">
-                                                                    <option t-att-value="product.id" t-esc="product.name" t-att-data-price="product.list_price"><t t-set="price" t-value="product.list_price"/></option>
+                                <section class="container">
+                                    <form action="/rec-subscription/create" method="post">
+                                        <div class="s_website_form_rows row s_col_no_bgcolor oe_website_subscription">
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom s_website_form_required">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="partner_id">
+                                                        <span class="s_website_form_label_content">Name</span>
+                                                        <span class="s_website_form_mark">*</span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <t t-if="request.env.user.has_group('recurring_subscription.group_manager')">
+                                                            <t t-set="partners" t-value="request.env['res.partner'].sudo().search([])"/>
+                                                            <select name="partner_id" id="partner_id" class="form-control">
+                                                                <t t-foreach="partners" t-as="partner">
+                                                                    <option t-att-value="partner.id" t-esc="partner.name"/>
                                                                 </t>
                                                             </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="product_id">
-                                                            <span class="s_website_form_label_content">Amount
-                                                            </span>
-                                                        </label>
-                                                        <div class="col-sm">
-                                                           <input name="recurring_amount" class="form-control" type="number" step="0.01"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="date">
-                                                            <span class="s_website_form_label_content">Date</span>
-                                                            <span class="s_website_form_mark">*</span></label>
-                                                        <div class="col-sm">
-                                                            <input name="date" type="date" class="form-control" data-date-format="yyyy-MM-dd" required="True"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px"  for="due_date">
-                                                        <span class="s_website_form_label_content">Due Date</span>
-                                                        <span class="s_website_form_mark">*</span></label>
-                                                        <div class="col-sm">
-                                                            <input name="due_date" type="date" class="form-control" data-date-format="yyyy-MM-dd" required="True"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
-                                                    <div class="row s_col_no_resize s_col_no_bgcolor">
-                                                        <div style="width: 200px;">
-                                                            <button class="btn btn-primary" type="submit">Create</button>
-                                                        </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                        <t t-set="partner" t-value="request.env['website.visitor']._get_visitor_from_request().partner_id"/>
+                                                        <input name="partner_id" class="form-control" type="text" placeholder="Name" t-att-value="partner.id" hidden="True"/>
+                                                        <input name="partner_name" class="form-control" type="text" placeholder="Name" t-att-value="partner.name"/>
+                                                        </t>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </section>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="product_id">
+                                                        <span class="s_website_form_label_content">Product
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                        <select id="product_id" name="product_id" class="form-control">
+                                                            <t t-foreach="products" t-as="product">
+                                                                <option t-att-value="product.id" t-esc="product.name" t-att-data-price="product.list_price"><t t-set="price" t-value="product.list_price"/></option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="product_id">
+                                                        <span class="s_website_form_label_content">Amount
+                                                        </span>
+                                                    </label>
+                                                    <div class="col-sm">
+                                                       <input name="recurring_amount" class="form-control" type="number" step="0.01"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px" for="date">
+                                                        <span class="s_website_form_label_content">Date</span>
+                                                        <span class="s_website_form_mark">*</span></label>
+                                                    <div class="col-sm">
+                                                        <input name="date" type="date" class="form-control" data-date-format="yyyy-MM-dd" required="True"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px"  for="due_date">
+                                                    <span class="s_website_form_label_content">Due Date</span>
+                                                    <span class="s_website_form_mark">*</span></label>
+                                                    <div class="col-sm">
+                                                        <input name="due_date" type="date" class="form-control" data-date-format="yyyy-MM-dd" required="True"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-0 py-2 col-12 s_website_form_field s_website_form_custom">
+                                                <div class="row s_col_no_resize s_col_no_bgcolor">
+                                                    <div style="width: 200px;">
+                                                        <button class="btn btn-primary" type="submit">Create</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
                             </div>
                         </div>
                     </div>
