@@ -73,7 +73,6 @@ class RecurringSubscription(http.Controller):
                 website=True)
     def portal_new_rec_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
-        uid = request.session.uid
         return request.render(
             "recurring_subscription.subscription_form")
 
@@ -95,8 +94,8 @@ class RecurringSubscription(http.Controller):
             'description': post.get('description'),
             'product_id': int(post.get('product_id')),
             'date': post.get('date'),
-            'due_date': post.get('due_date')
-            # 'recurring_amount': post.get('recurring_amount')
+            'due_date': post.get('due_date'),
+            'recurring_amount': post.get('recurring_amount')
         }
         if not record.get('establishment'):
             raise UserError("You do not have a Establishment ID...!")
@@ -127,8 +126,8 @@ class RecurringSubscription(http.Controller):
             active_ids=subscription).action_create_invoices()
         return "Created invoices successfully"
 
-    @http.route('/get-product-price', type='json', auth='user', website=True)
+    @http.route('/get_product_price', type='json', auth='user')
     def get_product_price(self, product_id):
-        product = request.env['product.product'].sudo().browse(int(product_id))
-        return product
+        product_price = request.env['product.product'].sudo().browse(int(product_id)).list_price
+        return product_price
 
