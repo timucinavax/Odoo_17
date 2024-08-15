@@ -101,7 +101,7 @@ class RecurringSubscription(http.Controller):
         print(record)
         if not record.get('establishment'):
             raise UserError("You do not have a Establishment ID...!")
-        # request.env['recurring.subscription'].sudo().create(record)
+        request.env['recurring.subscription'].sudo().create(record)
         return request.redirect('/rec-subscription')
 
     @http.route('/rec-subscription/credit/create', type='http',
@@ -126,5 +126,4 @@ class RecurringSubscription(http.Controller):
             subscription_id.id)
         subscription.billing_schedule_id.with_context(
             active_ids=subscription).action_create_invoices()
-
         return "Created invoices successfully"
