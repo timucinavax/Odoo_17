@@ -98,7 +98,6 @@ class RecurringSubscription(http.Controller):
             'due_date': post.get('due_date')
             # 'recurring_amount': post.get('recurring_amount')
         }
-        print(record)
         if not record.get('establishment'):
             raise UserError("You do not have a Establishment ID...!")
         request.env['recurring.subscription'].sudo().create(record)
@@ -127,3 +126,9 @@ class RecurringSubscription(http.Controller):
         subscription.billing_schedule_id.with_context(
             active_ids=subscription).action_create_invoices()
         return "Created invoices successfully"
+
+    @http.route('/get-product-price', type='json', auth='user', website=True)
+    def get_product_price(self, product_id):
+        product = request.env['product.product'].sudo().browse(int(product_id))
+        return product
+

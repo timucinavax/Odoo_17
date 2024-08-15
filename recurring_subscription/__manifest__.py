@@ -39,7 +39,10 @@
     'assets':{
         'web.assets_backend':[
             'recurring_subscription/static/src/action_manager.js'
-        ]
+        ],
+        # 'web.assets_frontend':[
+        #     'recurring_subscription/static/src/form_action_manager.js'
+        # ]
     },
     'application': True,
     'license': 'LGPL-3',
