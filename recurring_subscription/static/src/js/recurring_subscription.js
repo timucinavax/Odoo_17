@@ -12,6 +12,7 @@ export const WebsiteSubscription = publicWidget.Widget.extend({
         this.orm = this.bindService("orm");
     },
     start: function() {
+        this._super(...arguments);
         let product_id = this.$el.find('#product_id').val();
         this._getProductPrice(product_id);
     },
