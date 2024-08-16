@@ -2,6 +2,7 @@
 <odoo>
     <template id="subscription_data" name="Subscription Details">
         <t t-call="portal.portal_layout">
+<!--      View Subscription with minimum information in list     -->
             <div class="mb-0 py-2 col-12 s_website_form_submit"
                  data-name="Submit Button">
                 <div style="width: 200px;" class="s_website_form_label"/>
@@ -58,11 +59,14 @@
     </template>
     <template id="subscription_form" name="Subscription Form">
         <t t-call="website.layout">
+<!--      Form to create new subscription      -->
             <t t-set="products"
                t-value="request.env['product.product'].sudo().search([])"/>
             <div id="wrap" class="oe_structure oe_empty">
                 <section class="s_text_block pt40 pb40 o_colored_level ">
                     <div class="container s_allow_columns">
+                        <a href="/my/home" class="fa fa-home"/>  /
+                        <a href="/rec-subscription">Subscription</a>
                         <div class="row">
                             <div class="col-lg-8 mt-4 mt-lg-0">
                                 <section class="container">
@@ -97,6 +101,7 @@
                                                         <span class="s_website_form_label_content">Product
                                                         </span>
                                                     </label>
+
                                                     <div class="col-sm">
                                                         <select id="product_id" name="product_id" class="form-control">
                                                             <t t-foreach="products" t-as="product">
@@ -156,117 +161,123 @@
     </template>
     <template id="subscription_details" name="Subscription Details">
         <t t-call="website.layout">
+<!--      Detailed view of selected subscription      -->
             <div id="wrap" class="oe_structure oe_empty">
-                                    <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
-<div class="container s_allow_columns">
+                <section class="s_text_block pt40 pb40 o_colored_level " data-snippet="s_text_block">
+                    <div class="container s_allow_columns">
                         <div class="row">
                             <div class="col-lg-8 mt-4 mt-lg-0">
-            <div class="row" id="intro_row">
-                <h2 class="my-0 col-12 col-lg flex-grow-1 mb-1 mb-lg-0">
-                    <em t-out="subscription.order"/>
-                </h2>
-            </div>
-            <div id="content">
-                <div id="informations" class="row">
-                    <!-- Information -->
-                    <div id="subscription_info" class="col-12 col-lg-6 mb-4">
-                        <span id="subscription_info_title">
-                            <h4 class="mb-1">Subscription Information</h4>
-                            <hr class="mt-1 mb-2"/>
-                        </span>
-                        <table class="table table-borderless table-sm">
-                            <tbody style="white-space:nowrap"
-                                   id="sale_info_table">
-                                <tr>
-                                    <th class="ps-0 pb-0">Subscription :</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.order"/>
-                                    </td>
-                                </tr>
-                                <tr t-if="subscription.date">
-                                    <th class="ps-0 pb-0">Date:</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.date"
-                                              t-options='{"widget": "date"}'/>
-                                    </td>
-                                </tr>
-                                <tr t-if="subscription.due_date">
-                                    <th class="ps-0 pb-0">Due Date:</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.due_date"
-                                              t-options='{"widget": "date"}'/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="ps-0 pb-0">Customer Name:</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.partner_id"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="ps-0 pb-0">Establishment ID:</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.establishment"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="ps-0 pb-0">Next Billing :</th>
-                                    <td class="w-100 pb-0 text-wrap">
-                                        <span t-field="subscription.next_billing"
-                                              t-options='{"widget": "date"}'/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <section id="details" style="page-break-inside: auto;">
-                        <div class="table-responsive">
-                            <table class="table table-sm"
-                                   id="subscription_order_table">
-                                <thead class="bg-100">
-                                    <tr>
-                                        <th class="text-start"
-                                            id="product_name_header">
-                                            Product
-                                        </th>
-                                        <th class="text-end"
-                                            id="subtotal_header">
-                                            <span>Amount</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="sale_tbody">
-                                    <tr>
-                                        <td id="product_name">
-                                            <span t-field="subscription.product_id"/>
-                                        </td>
-                                        <td class="text-end" id="subtotal">
-                                            <span class="oe_order_line_price_subtotal"
-                                                  t-field="subscription.recurring_amount"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-                    <section t-if="subscription.terms" class="mt-4">
-                        <h4 class="">Terms and conditions</h4>
-                        <hr class="mt-0 mb-1"/>
-                        <span t-field="subscription.terms"/>
-                    </section>
-                    <div class="form-group"
-                         groups="recurring_subscription.group_manager">
-                        <a t-attf-href="/rec-subscription/billing-schedule/#{subscription.id}">
-                            <button class="form-control btn btn-primary" style="width: 200px;">Run Billing Schedule
-                            </button>
-                        </a>
-                    </div>
-                </div>
-            </div>
+                                <a href="/my/home" class="fa fa-home"/>  /
+                                <a href="/rec-subscription">Subscription</a>  /
+                                <span t-esc="subscription.order"/>
+                                <div class="row" id="intro_row">
+                                    <h2 class="my-0 col-12 col-lg flex-grow-1 mb-1 mb-lg-0">
+                                        <em t-out="subscription.order"/>
+                                    </h2>
+                                </div>
+                                <div id="content">
+                                    <div id="informations" class="row">
+                                        <!-- Information -->
+                                        <div id="subscription_info" class="col-12 col-lg-6 mb-4">
+                                            <span id="subscription_info_title">
+                                                <h4 class="mb-1">Subscription Information</h4>
+                                                <hr class="mt-1 mb-2"/>
+                                            </span>
+                                            <table class="table table-borderless table-sm">
+                                                <tbody style="white-space:nowrap"
+                                                       id="sale_info_table">
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">Subscription :</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.order"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="subscription.date">
+                                                        <th class="ps-0 pb-0">Date:</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.date"
+                                                                  t-options='{"widget": "date"}'/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr t-if="subscription.due_date">
+                                                        <th class="ps-0 pb-0">Due Date:</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.due_date"
+                                                                  t-options='{"widget": "date"}'/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">Customer Name:</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.partner_id"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class="ps-0 pb-0">Establishment ID:</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.establishment"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <t t-if="subscription.next_billing">
+                                                        <th class="ps-0 pb-0">Next Billing :</th>
+                                                        <td class="w-100 pb-0 text-wrap">
+                                                            <span t-field="subscription.next_billing"
+                                                                  t-options='{"widget": "date"}'/>
+                                                        </td>
+                                                        </t>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <section id="details" style="page-break-inside: auto;">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm"
+                                                       id="subscription_order_table">
+                                                    <thead class="bg-100">
+                                                        <tr>
+                                                            <th class="text-start"
+                                                                id="product_name_header">
+                                                                Product
+                                                            </th>
+                                                            <th class="text-end"
+                                                                id="subtotal_header">
+                                                                <span>Amount</span>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody class="sale_tbody">
+                                                        <tr>
+                                                            <td id="product_name">
+                                                                <span t-field="subscription.product_id"/>
+                                                            </td>
+                                                            <td class="text-end" id="subtotal">
+                                                                <span class="oe_order_line_price_subtotal"
+                                                                      t-field="subscription.recurring_amount"/>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </section>
+                                        <section t-if="subscription.terms" class="mt-4">
+                                            <h4 class="">Terms and conditions</h4>
+                                            <hr class="mt-0 mb-1"/>
+                                            <span t-field="subscription.terms"/>
+                                        </section>
+                                        <div class="form-group"
+                                             groups="recurring_subscription.group_manager">
+                                            <a t-attf-href="/rec-subscription/billing-schedule/#{subscription.id}">
+                                                <button class="form-control btn btn-primary" style="width: 200px;">Run Billing Schedule
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                            </div>
-                                    </section>
+                    </div>
+                </section>
             </div>
         </t>
     </template>

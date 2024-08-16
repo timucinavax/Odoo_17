@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="credit_data" name="Subscription Credit Details">
+<!--    View Credit minimum information as list    -->
         <t t-call="portal.portal_layout">
             <div class="mb-0 py-2 col-12 s_website_form_submit"
                  data-name="Submit Button">
@@ -58,6 +59,7 @@
     </template>
     <template id="credit_form" name="Credit Form">
         <t t-call="website.layout">
+<!--      Form to create new credit      -->
             <t t-if="request.env.user.has_group('base.group_portal')">
                 <t t-set="subscriptions"
                    t-value="request.env['recurring.subscription'].sudo().search([('partner_id','=',request.env.user.partner_id.id)])"/>
@@ -69,6 +71,9 @@
             <div id="wrap" class="oe_structure oe_empty">
                 <section class="s_text_block pt40 pb40 o_colored_level ">
                     <div class="container s_allow_columns">
+                        <a href="/my/home" class="fa fa-home"/>
+                        /
+                        <a href="/rec-subscription/credit">Credit</a>
                         <div class="row">
                             <div class="col-lg-8 mt-4 mt-lg-0">
                                 <section class="container">
@@ -180,15 +185,20 @@
     </template>
     <template id="credit_details" name="Credit Details">
         <t t-call="website.layout">
+<!--      Detailed view of credits      -->
             <div id="wrap" class="oe_structure oe_empty">
                 <section class="s_text_block pt40 pb40 o_colored_level "
                          data-snippet="s_text_block">
                     <div class="container s_allow_columns">
                         <div class="row">
                             <div class="col-lg-8 mt-4 mt-lg-0">
+                                <a href="/my/home" class="fa fa-home"/>
+                                /
+                                <a href="/rec-subscription/credit">Credit</a>
+                                /
+                                <span t-field="credit.subscription_id"/>
                                 <div id="content">
                                     <div id="informations" class="row">
-                                        <!-- Information -->
                                         <div id="credit_info"
                                              class="col-12 col-lg-6 mb-4">
                                             <span id="credit_info_title">

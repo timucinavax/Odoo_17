@@ -32,6 +32,7 @@ class RecurringSubscription(http.Controller):
         type='http', auth="user",
         website=True)
     def subscription_details(self, subscription_id):
+        """Detailed view of selected subscription"""
         values = {
             'subscription': subscription_id
         }
@@ -41,7 +42,7 @@ class RecurringSubscription(http.Controller):
     @http.route('/rec-subscription/credit', type='http', auth="user",
                 website=True)
     def portal_my_rec_subscription_credit(self, **kwargs):
-        """View recurring subscriptions of logged user"""
+        """View recurring subscriptions credit of logged user"""
         uid = request.session.uid
         # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
         if request.env['res.users'].search([('id', '=', uid)]).has_group(
@@ -63,6 +64,7 @@ class RecurringSubscription(http.Controller):
         '/rec-subscription/credit/<model("recurring.subscription.credit"):credit_id>',
         type='http', auth="user", website=True)
     def credit_details(self, credit_id):
+        """Detailed view of recurring subscription"""
         values = {
             'credit': credit_id
         }
@@ -72,14 +74,14 @@ class RecurringSubscription(http.Controller):
     @http.route('/rec-subscription/new', type='http', auth="user",
                 website=True)
     def portal_new_rec_subscription(self, **kwargs):
-        """View recurring subscriptions of logged user"""
+        """Redirect to create form for recurring subscription"""
         return request.render(
             "recurring_subscription.subscription_form")
 
     @http.route('/rec-subscription/credit/new', type='http', auth="user",
                 website=True)
     def portal_new_rec_subscription_credit(self, **kwargs):
-        """View recurring subscriptions of logged user"""
+        """Redirect to create form for recurring subscription credit"""
         uid = request.session.uid
         return request.render(
             "recurring_subscription.credit_form")
@@ -105,7 +107,7 @@ class RecurringSubscription(http.Controller):
     @http.route('/rec-subscription/credit/create', type='http',
                 auth='user', website=True, csrf=False)
     def portal_create_rec_subscription_credit(self, **post):
-        """Create new subscription from portal"""
+        """Create new credit from portal"""
         record = {
             'subscription_id': post.get('subscription_id'),
             'start_date': post.get('start_date'),
@@ -120,14 +122,9 @@ class RecurringSubscription(http.Controller):
         type='http',
         auth='user', website=True, csrf=False)
     def portal_run_billing_schedule(self, subscription_id):
+        """Run the billing schedule of selected subscription by managers"""
         subscription = request.env['recurring.subscription'].browse(
             subscription_id.id)
         subscription.billing_schedule_id.with_context(
             active_ids=subscription).action_create_invoices()
         return "Created invoices successfully"
-
-    @http.route('/get_product_price', type='json', auth='user')
-    def get_product_price(self, product_id):
-        product_price = request.env['product.product'].sudo().browse(int(product_id)).list_price
-        return product_price
-
