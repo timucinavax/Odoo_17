@@ -1,6 +1,7 @@
 /** @odoo-module */
 import publicWidget from "@web/legacy/js/public/public_widget";
 import { registry } from "@web/core/registry";
+import { jsonrpc } from "@web/core/network/rpc_service";
 
 export const WebsiteSubscription = publicWidget.Widget.extend({
     selector: '.oe_website_subscription',
@@ -26,3 +27,16 @@ export const WebsiteSubscription = publicWidget.Widget.extend({
     }
     });
 publicWidget.registry.WebsiteSubscription = WebsiteSubscription;
+
+//export const creditSnippet = publicWidget.Widget.extend({
+//    selector: '.oe_rec_sub_credits',
+//    start: function() {
+//        this._super(...arguments);
+//        let partner_id = this.$el.find('#product_id').val();
+//        this.get_credit_record();
+//    },
+//    get_credit_record() {
+//
+//    }
+//    }
+//publicWidget.registry.creditSnippet = creditSnippet;

@@ -4,7 +4,12 @@
         <field name="name">test.counter</field>
         <field name="tag">counter_2</field>
     </record>
-    <menuitem id="root_menu_test" name="Test Menu" action="client_action_counter">
-<!--        <menuitem id="counter_menu" name="Counter" action="client_action_counter"/>-->
+    <record id="client_action_extend_counter" model="ir.actions.client">
+        <field name="name">test.counter.reset</field>
+        <field name="tag">start_again</field>
+    </record>
+    <menuitem id="root_menu_test" name="Test Menu">
+        <menuitem id="counter_menu" name="Counter" action="client_action_counter"/>
+        <menuitem id="counter_reset_menu" name="Start Over" action="client_action_extend_counter"/>
     </menuitem>
 </odoo>

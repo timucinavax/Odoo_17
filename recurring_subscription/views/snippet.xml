@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="credits_snippet" name="Credit Snippet">
+<!--        <t t-call="portal.portal_layout">-->
+<!--            <t t-set="partner_id" t-value="request.env.user.partner_id.id"/>-->
+            <div class="oe_rec_sub_credits">
+            <div>
+                <h2>
+                    <center>
+                        <span>Subscription Credit</span>
+                    </center>
+                </h2>
+            </div>
+            <table class="table table-striped">
+                <thead style="font-size:23px">
+                    <tr>
+                        <th>Subscription</th>
+                        <th>Customer</th>
+                        <th>Credit Amount</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+<!--                <tbody>-->
+<!--                    <t t-foreach="widget.get_credit_record(partner_id)" t-as="rec">-->
+<!--                        <tr>-->
+<!--                            <td>-->
+<!--                                <a t-attf-href="/rec-subscription/credit/#{rec.id}">-->
+<!--                                    <span t-field="rec.subscription_id"/>-->
+<!--                                </a>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-field="rec.partner_id"/>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-field="rec.credit_amount"/>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-field="rec.start_date"/>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-field="rec.end_date"/>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <span t-field="rec.state"/>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                    </t>-->
+<!--                </tbody>-->
+            </table>
+            </div>
+<!--        </t>-->
+    </template>
+    <template id="external_snippets" inherit_id="website.snippets">
+    <xpath expr="//div[@id='snippet_effect']//t[@t-snippet][last()]" position="after">
+           <t t-snippet="recurring_subscription.credits_snippet"/>
+       </xpath>
+    </template>
+</odoo>

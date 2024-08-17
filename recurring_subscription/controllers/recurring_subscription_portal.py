@@ -128,3 +128,11 @@ class RecurringSubscription(http.Controller):
         subscription.billing_schedule_id.with_context(
             active_ids=subscription).action_create_invoices()
         return "Created invoices successfully"
+
+    @http.route('/last_four_credits', type='json', auth='public')
+    def last_four_credits(self):
+        credit = request.env['recurring.subscription.credit'].sudo().search(
+            [('subscription_id.partner_id', '=', request.user.partner_id)],
+            limit=4, order='create_date desc')
+        print(credit)
+        return credit

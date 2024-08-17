@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="test_module.start_again" t-inherit="test_module.Counter" t-inherit-mode="primary">
+        <xpath expr="//div" position="inside">
+            <button class="btn btn-primary" t-on-click="reset">Start Again</button>
+        </xpath>
+    </t>
+</templates>
