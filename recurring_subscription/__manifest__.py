@@ -42,6 +42,7 @@
             'recurring_subscription/static/src/js/action_manager.js'
         ],
         'web.assets_frontend':[
+            'recurring_subscription/static/src/xml/recurring_subscription_snippet_templates.xml'
             'recurring_subscription/static/src/js/recurring_subscription.js'
         ]
     },
