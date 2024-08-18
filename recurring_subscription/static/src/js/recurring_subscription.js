@@ -4,6 +4,7 @@ import { registry } from "@web/core/registry";
 import { jsonrpc } from "@web/core/network/rpc_service";
 import { renderToElement } from "@web/core/utils/render";
 
+
 export const WebsiteSubscription = publicWidget.Widget.extend({
     selector: '.oe_website_subscription',
     events: Object.assign({
@@ -43,34 +44,32 @@ publicWidget.registry.WebsiteSubscription = WebsiteSubscription;
 //publicWidget.registry.creditSnippet = creditSnippet;
 
 
-export function _chunk(array, size) {
+export function chunk(array, size) {
     const result = [];
     for (let i = 0; i < array.length; i += size) {
         result.push(array.slice(i, i + size));
     }
     return result;
 }
-var TopSellingProducts = PublicWidget.Widget.extend({
+var TopSellingProducts = publicWidget.Widget.extend({
         selector: '.best_seller_product_snippet',
         willStart: async function () {
             const data = await jsonrpc('/top_selling_products', {})
-            const [products, categories, website_id, unique_id] = data
+            const [credit_ids] = data
             Object.assign(this, {
-                products, categories, website_id, unique_id
+                credit_ids
             })
         },
         start: function () {
-            const refEl = this.$el.find("#top_products_carousel")
-            const { products, categories, current_website_id, products_list} = this
-            const chunkData = chunk(products, 4)
-            refEl.html(renderToElement(recurring_subscription.products_category_wise', {
-                products,
-                categories,
-                current_website_id,
-                products_list,
+            const refEl = this.$el.find("#last_four_credits")
+            const { credit_ids } = this
+            const chunkData = chunk(credit_ids, 4)
+            console.log(chunkData)
+            console.log(credit_ids)
+            refEl.html(renderToElement('recurring_subscription.products_category_wise', {
+                credit_ids,
                 chunkData
             }))
         }
     });
-PublicWidget.registry.products_category_wise_snippet = TopSellingProducts;
-return TopSellingProducts;
+publicWidget.registry.TopSellingProducts = TopSellingProducts;
