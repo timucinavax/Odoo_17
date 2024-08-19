@@ -3,8 +3,11 @@
     <template id="recurring_subscription_credit_template" name="Recurring Subscription Credits">
         <!--        Template Best seller product dynamic snippet-->
         <t t-name="last_four_credit_template">
+
             <section class="last_four_credit_snippet">
-                <div id="last_four_credits"/>
+                <div id="last_four_credits">
+                    <h4><center>Please save to load data...!</center></h4>
+                </div>
             </section>
         </t>
     </template>

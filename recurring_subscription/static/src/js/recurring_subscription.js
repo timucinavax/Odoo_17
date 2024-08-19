@@ -29,19 +29,33 @@ export const WebsiteSubscription = publicWidget.Widget.extend({
     }
     });
 publicWidget.registry.WebsiteSubscription = WebsiteSubscription
-
+export function _chunk(array, size) {
+    const result = [];
+    for (let i = 0; i < array.length; i += size) {
+        result.push(array.slice(i, i + size));
+    }
+    return result;
+}
 export const lastFourCredits = publicWidget.Widget.extend({
     selector: '.last_four_credit_snippet',
     willStart: async function () {
-        const credits = await jsonrpc('/last_four_credits', {})
-        Object.assign(this, { credits })
+        const data = await jsonrpc('/last_four_credits', {})
+        const [credits, currency] = data
+        Object.assign(this, { credits, currency })
     },
     start: function () {
         this._super(...arguments)
         const refEl = this.$el.find("#last_four_credits")
-        const { credits } = this
+        refEl.empty()
+        const { credits, currency } = this
+        var chunkData = _chunk(credits, 4)
+        if (chunkData[0]) {
+            chunkData[0].is_active = true
+        }
         refEl.html(renderToElement('recurring_subscription.last_four_credit', {
-            credits
+            credits,
+            currency,
+            chunkData
         }));
     }
 });

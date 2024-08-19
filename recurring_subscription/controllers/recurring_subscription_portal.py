@@ -30,6 +30,7 @@ class RecurringSubscription(http.Controller):
         website=True)
     def subscription_details(self, subscription_id):
         """Detailed view of selected subscription"""
+        print(subscription_id)
         values = {
             'subscription': subscription_id
         }
@@ -117,10 +118,8 @@ class RecurringSubscription(http.Controller):
         auth='user', website=True, csrf=False)
     def portal_run_billing_schedule(self, subscription_id):
         """Run the billing schedule of selected subscription by managers"""
-        subscription = request.env['recurring.subscription'].browse(
-            subscription_id.id)
-        subscription.billing_schedule_id.with_context(
-            active_ids=subscription).action_create_invoices()
+        subscription_id.billing_schedule_id.with_context(
+            active_ids=subscription_id).action_create_invoices()
         return "Created invoices successfully"
 
     @http.route('/last_four_credits', type='json', auth='public')
@@ -133,15 +132,14 @@ class RecurringSubscription(http.Controller):
                   request.env.user.partner_id.id)],
                 ['subscription_id', 'partner_id', 'credit_amount', 'product_id',
                  'start_date', 'end_date', 'state', 'product_image'],
-                limit=4, order="create_date desc"))
+                order="create_date desc"))
         elif request.env.user.has_group('recurring_subscription.group_manager'):
             credit_ids = (request.env['recurring.subscription.credit'].sudo().
                           search_read([], ['subscription_id', 'partner_id',
                                            'credit_amount', 'start_date',
                                            'end_date', 'state', 'product_id',
                                            'product_image'],
-                                      limit=4,
                                       order="create_date desc"))
-        print(credit_ids)
-        return credit_ids
+        currency = request.env.company.currency_id.symbol
+        return credit_ids, currency
     

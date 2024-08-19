@@ -1,59 +1,56 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--&lt;!&ndash; Template for displaying top-selling products in categories &ndash;&gt;-->
+<!-- Template for displaying last four credits in carousel -->
 <templates id="rec_subscription_credit_templates" xml:space="preserve">
    <t t-name="recurring_subscription.last_four_credit">
-       <div id="wrap" class="oe_structure oe_empty">
-           <section class="s_text_block pt40 pb40 o_colored_level "
-                    data-snippet="s_text_block">
-               <div class="container s_allow_columns">
-                    <div>
-                        <h3>
-                            <center>
-                                <span>Last Four Credits</span>
-                            </center>
-                        </h3>
-                    </div>
-                   <table class="table table-striped">
-                        <thead style="font-size:21px">
-                            <tr>
-                                <th>Subscription</th>
-                                <th>Customer</th>
-                                <th>Credit Amount</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>State</th>
-                            </tr>
-                        </thead>
-                       <tbody>
-                            <t t-foreach="credits" t-as="credit"
-                               t-key="data_index">
-                                <tr>
-                                    <td>
-                                        <a t-attf-href="/rec-subscription/#{credit.subscription_id[0]}">
-                                            <span t-esc="credit.subscription_id[1]"/>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <span t-esc="credit.partner_id[1]"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="credit.credit_amount"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="credit.start_date"/>
-                                    </td>
-                                    <td>
-                                        <span t-esc="credit.end_date"/>
-                                    </td>
-                                    <td>
-                                        <t t-esc="{'pending': 'Pending','confirmed':'Confirmed','first_approved':'First Approved','fully_approved':'Fully Approved','rejected':'Rejected'}[credit.state]"/>
-                                    </td>
-                                </tr>
-                            </t>
-                        </tbody>
-                    </table>
+       <div>
+            <h3>
+                <center>
+                    <span>Last Four Credits</span>
+                </center>
+            </h3>
+           <div id="course_carousel" class="container carousel slide"
+                data-bs-ride="carousel" t-att-data-bs-interval="interval">
+               <div class="carousel-inner row w-100 mx-auto" role="listbox">
+                   <t t-foreach="chunkData" t-as="chunk" t-key="chunk_index">
+                       <div t-att-class="chunk.is_active ? 'carousel-item active' : 'carousel-item'">
+                           <div class="row">
+                               <t t-foreach="chunk" t-as="credit"
+                                  t-key="credit_index">
+                                   <div class="block span3 col-3">
+                                       <div class="card-group">
+                                           <div class="card">
+                                               <a t-attf-href="/rec-subscription/#{credit.subscription_id[0]}">
+                                                   <img class="card-img-top"
+                                                        t-attf-src="data:image/png;base64,{{credit.product_image}}"
+                                                        style="padding: 0px; margin: 0px; height: 160px; width:305px;"/>
+                                                   <h5 class="mb-0"><center><t t-esc="credit.subscription_id[1]"/></center></h5>
+                                               </a>
+                                               <h7><center><span t-esc="credit.partner_id[1]"/></center></h7>
+                                               <h7><center><t t-out="currency"/><span
+                                                       t-esc="credit.credit_amount"
+                                                       class="oe_currency_value"/></center></h7>
+                                               <h7><center><t t-esc="{'pending': 'Pending','confirmed':'Confirmed','first_approved':'First Approved','fully_approved':'Fully Approved','rejected':'Rejected'}[credit.state]"/></center></h7>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </t>
+                           </div>
+                       </div>
+                   </t>
                </div>
-           </section>
+               <a t-attf-href="#course_carousel" class="carousel-control-prev"
+                  data-bs-slide="prev" role="button" aria-label="Previous"
+                  title="Previous">
+                   <span class="fa fa-chevron-circle-left fa-2x" style="color: black"/>
+                   <span class="visually-hidden">Previous</span>
+               </a>
+               <a t-attf-href="#course_carousel" class="carousel-control-next"
+                  data-bs-slide="next" role="button" aria-label="Next"
+                  title="Next">
+                   <span class="fa fa-chevron-circle-right fa-2x" style="color: black"/>
+                   <span class="visually-hidden">Next</span>
+               </a>
+           </div>
        </div>
    </t>
 </templates>
