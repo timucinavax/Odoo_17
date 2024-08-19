@@ -11,13 +11,18 @@ class RecurringSubscription(http.Controller):
     def portal_my_rec_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
         # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
+        domain = []
         if request.env.user.has_group('base.group_portal'):
             # check whether logged user is portal user
-            subscriptions = request.env['recurring.subscription'].sudo().search(
-                [('partner_id', '=', request.env.user.partner_id.id)])
+            domain = [('partner_id', '=', request.env.user.partner_id.id)]
+
+        elif request.env.user.has_group('recurring_subscription.group_manager'):
+            # check whether logged user has manager access
+            domain = []
         else:
-            subscriptions = request.env['recurring.subscription'].sudo().search(
-                [('create_uid', '=', request.env.user.id)])
+            domain = [('create_uid', '=', request.env.user.id)]
+        subscriptions = request.env['recurring.subscription'].sudo().search(
+            domain)
         values = {
             'record': subscriptions,
         }
@@ -26,14 +31,10 @@ class RecurringSubscription(http.Controller):
 
     @http.route(
         '/rec-subscription/<model("recurring.subscription"):subscription_id>',
-        type='http', auth="user",
-        website=True)
+        type='http', auth="user", website=True)
     def subscription_details(self, subscription_id):
         """Detailed view of selected subscription"""
-        print(subscription_id)
-        values = {
-            'subscription': subscription_id
-        }
+        values = {'subscription': subscription_id}
         return request.render('recurring_subscription.subscription_details',
                               values)
 
@@ -41,14 +42,17 @@ class RecurringSubscription(http.Controller):
                 website=True)
     def portal_my_rec_subscription_credit(self, **kwargs):
         """View recurring subscriptions credit of logged user"""
-        # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
+        domain = []
         if request.env.user.has_group('base.group_portal'):
             # check whether logged user is portal user
-            credit = request.env['recurring.subscription.credit'].sudo().search(
-                [('subscription_id.partner_id', '=', request.env.user.partner_id.id)])
+            domain = [('subscription_id.partner_id', '=',
+                       request.env.user.partner_id.id)]
+        elif request.env.user.has_group('recurring_subscription.group_manager'):
+            domain = []
         else:
-            credit = request.env['recurring.subscription.credit'].sudo().search(
-                [('create_uid', '=', request.env.user.id)])
+            domain = [('create_uid', '=', request.env.user.id)]
+        credit = request.env['recurring.subscription.credit'].sudo().search(
+            domain)
         values = {
             'record': credit,
         }
@@ -60,9 +64,7 @@ class RecurringSubscription(http.Controller):
         type='http', auth="user", website=True)
     def credit_details(self, credit_id):
         """Detailed view of recurring subscription"""
-        values = {
-            'credit': credit_id
-        }
+        values = {'credit': credit_id}
         return request.render('recurring_subscription.credit_details',
                               values)
 
@@ -77,7 +79,6 @@ class RecurringSubscription(http.Controller):
                 website=True)
     def portal_new_rec_subscription_credit(self, **kwargs):
         """Redirect to create form for recurring subscription credit"""
-        uid = request.session.uid
         return request.render(
             "recurring_subscription.credit_form")
 
@@ -124,22 +125,18 @@ class RecurringSubscription(http.Controller):
 
     @http.route('/last_four_credits', type='json', auth='public')
     def last_four_credits(self):
-        credit_ids = {}
         if request.env.user.has_group('base.group_portal'):
-            credit_ids = (request.env['recurring.subscription.credit'].sudo().
-                          search_read(
-                [('subscription_id.partner_id', '=',
-                  request.env.user.partner_id.id)],
-                ['subscription_id', 'partner_id', 'credit_amount', 'product_id',
-                 'start_date', 'end_date', 'state', 'product_image'],
-                order="create_date desc"))
+            domain = [('subscription_id.partner_id', '=',
+                       request.env.user.partner_id.id)]
         elif request.env.user.has_group('recurring_subscription.group_manager'):
-            credit_ids = (request.env['recurring.subscription.credit'].sudo().
-                          search_read([], ['subscription_id', 'partner_id',
-                                           'credit_amount', 'start_date',
-                                           'end_date', 'state', 'product_id',
-                                           'product_image'],
-                                      order="create_date desc"))
+            domain = []
+        else:
+            domain = [('create_uid', '=', request.env.user.id)]
+        credit_ids = (request.env['recurring.subscription.credit'].sudo().
+                      search_read(
+            domain, ['subscription_id', 'partner_id', 'credit_amount',
+                     'start_date', 'end_date', 'state', 'product_id',
+                     'product_image'], order="create_date desc"))
         currency = request.env.company.currency_id.symbol
         return credit_ids, currency
     
