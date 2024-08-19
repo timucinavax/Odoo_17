@@ -23,6 +23,9 @@ class RecurringSubscriptionCredit(models.Model):
                                   string="Currency", default=lambda self: self
                                   .env.user.company_id.currency_id.id)
     credit_amount = fields.Monetary(string="Credit amount")
+    product_id = fields.Many2one('product.product',
+                                 related="subscription_id.product_id")
+    product_image = fields.Binary(related="subscription_id.product_image")
     state = fields.Selection(string="State", selection=[
         ('pending', 'Pending'),
         ('confirmed', 'Confirmed'),

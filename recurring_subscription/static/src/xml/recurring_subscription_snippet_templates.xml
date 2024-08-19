@@ -46,7 +46,7 @@
                                         <span t-esc="credit.end_date"/>
                                     </td>
                                     <td>
-                                        <span t-esc="credit.state"/>
+                                        <t t-esc="{'pending': 'Pending','confirmed':'Confirmed','first_approved':'First Approved','fully_approved':'Fully Approved','rejected':'Rejected'}[credit.state]"/>
                                     </td>
                                 </tr>
                             </t>

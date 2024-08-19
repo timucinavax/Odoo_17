@@ -47,6 +47,7 @@ class RecurringSubscription(models.Model):
                                        "subscription_id")
     credit_amount = fields.Monetary(store=True,
                                     compute="_compute_credit_amount")
+    product_image = fields.Binary(compute="_compute_product_image")
 
     @api.model_create_multi
     def create(self, record):
@@ -55,6 +56,13 @@ class RecurringSubscription(models.Model):
         rec['order'] = self.env['ir.sequence'].next_by_code(
             'subscription.sequence')
         return rec
+
+    @api.depends('product_id')
+    def _compute_product_image(self):
+        for rec in self:
+            rec.product_image = False
+            if rec.product_id:
+                rec.product_image = rec.product_id.image_1920
 
     @api.depends('credit_ids')
     def _compute_credit_amount(self):
