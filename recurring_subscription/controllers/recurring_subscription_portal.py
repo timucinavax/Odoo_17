@@ -1,4 +1,3 @@
-from datetime import time
 from odoo import http
 from odoo.exceptions import UserError
 from odoo.http import request
@@ -130,16 +129,14 @@ class RecurringSubscription(http.Controller):
             active_ids=subscription).action_create_invoices()
         return "Created invoices successfully"
 
-    # @http.route('/last_four_credits', type='json', auth='public')
-    # def last_four_credits(self):
-    #     credit = request.env['recurring.subscription.credit'].sudo().search(
-    #         [('subscription_id.partner_id', '=', request.user.partner_id)],
-    #         limit=4, order='create_date desc')
-    #     print(credit)
-    #     return credit
-
-    @http.route('/top_selling_products', type='json', auth='public')
+    @http.route('/last_four_credits', type='json', auth='public')
     def top_selling(self):
-        credit_ids = request.env['recurring.subscription.credit'].sudo().search([('subscription_id.partner_id','=', request.env.user.partner_id.id)], limit=4, order="create_date desc")
-        print(credit_ids)
+        credit_ids = (request.env['recurring.subscription.credit'].sudo().
+                      search_read(
+            [('subscription_id.partner_id', '=',
+              request.env.user.partner_id.id)],
+            ['subscription_id', 'partner_id', 'credit_amount',
+             'start_date', 'end_date', 'state'],
+            limit=4, order="create_date desc"))
         return credit_ids
+    

@@ -30,46 +30,21 @@ export const WebsiteSubscription = publicWidget.Widget.extend({
     });
 publicWidget.registry.WebsiteSubscription = WebsiteSubscription;
 
-//export const creditSnippet = publicWidget.Widget.extend({
-//    selector: '.oe_rec_sub_credits',
-//    start: function() {
-//        this._super(...arguments);
-//        let partner_id = this.$el.find('#product_id').val();
-//        this.get_credit_record();
-//    },
-//    get_credit_record() {
-//
-//    }
-//    }
-//publicWidget.registry.creditSnippet = creditSnippet;
-
-
-export function chunk(array, size) {
-    const result = [];
-    for (let i = 0; i < array.length; i += size) {
-        result.push(array.slice(i, i + size));
-    }
-    return result;
-}
-var TopSellingProducts = publicWidget.Widget.extend({
-        selector: '.best_seller_product_snippet',
+var lastFourCredits = publicWidget.Widget.extend({
+        selector: '.last_four_credit_snippet',
         willStart: async function () {
-            const data = await jsonrpc('/top_selling_products', {})
-            const [credit_ids] = data
+            const credits = await jsonrpc('/last_four_credits', {})
             Object.assign(this, {
-                credit_ids
+                credits
             })
         },
         start: function () {
+            this._super(...arguments)
             const refEl = this.$el.find("#last_four_credits")
-            const { credit_ids } = this
-            const chunkData = chunk(credit_ids, 4)
-            console.log(chunkData)
-            console.log(credit_ids)
-            refEl.html(renderToElement('recurring_subscription.products_category_wise', {
-                credit_ids,
-                chunkData
+            const { credits } = this
+            refEl.html(renderToElement('recurring_subscription.last_four_credit', {
+                credits
             }))
         }
     });
-publicWidget.registry.TopSellingProducts = TopSellingProducts;
+publicWidget.registry.lastFourCredits = lastFourCredits;

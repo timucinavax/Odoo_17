@@ -1,31 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--&lt;!&ndash; Template for displaying top-selling products in categories &ndash;&gt;-->
-    <templates id="best_seller_template" xml:space="preserve">
-   <t t-name="recurring_subscription.products_category_wise">
-       <div>
-         <div>
-                <h2>
-                    <center>
-                        <span>Subscription Credit</span>
-                    </center>
-                </h2>
-            </div>
-            <table class="table table-striped">
-                <thead style="font-size:23px">
-                    <tr>
-                        <th>Subscription</th>
-                        <th>Customer</th>
-                        <th>Credit Amount</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>State</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <span t-esc="chunkData"/>
-                    <span t-esc="credit_ids"/>
-                </tbody>
-            </table>
+<templates id="rec_subscription_credit_templates" xml:space="preserve">
+   <t t-name="recurring_subscription.last_four_credit">
+       <div id="wrap" class="oe_structure oe_empty">
+           <section class="s_text_block pt40 pb40 o_colored_level "
+                    data-snippet="s_text_block">
+               <div class="container s_allow_columns">
+                    <div>
+                        <h3>
+                            <center>
+                                <span>Last Four Credits</span>
+                            </center>
+                        </h3>
+                    </div>
+                   <table class="table table-striped">
+                        <thead style="font-size:21px">
+                            <tr>
+                                <th>Subscription</th>
+                                <th>Customer</th>
+                                <th>Credit Amount</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>State</th>
+                            </tr>
+                        </thead>
+                       <tbody>
+                            <t t-foreach="credits" t-as="credit"
+                               t-key="data_index">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/rec-subscription/#{credit.subscription_id[0]}">
+                                            <span t-esc="credit.subscription_id[1]"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span t-esc="credit.partner_id[1]"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="credit.credit_amount"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="credit.start_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="credit.end_date"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc="credit.state"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+               </div>
+           </section>
        </div>
    </t>
 </templates>

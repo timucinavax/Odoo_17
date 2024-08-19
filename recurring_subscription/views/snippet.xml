@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <template id="products_category_wise_template" name="Best Seller">
+    <template id="recurring_subscription_credit_template" name="Recurring Subscription Credits">
         <!--        Template Best seller product dynamic snippet-->
-        <t t-name="home_template">
-            <section class="best_seller_product_snippet">
+        <t t-name="last_four_credit_template">
+            <section class="last_four_credit_snippet">
                 <div id="last_four_credits"/>
             </section>
         </t>
     </template>
-    <template id="basic_snippet" inherit_id="website.snippets"
-              name="Best seller Snippet">
+    <template id="rec_sub_credit_snippet" inherit_id="website.snippets"
+              name="Recurring Subscription Credit Snippet">
         <xpath expr="//div[@id='snippet_effect']//t[@t-snippet][last()]"
                position="after">
-            <t t-snippet="recurring_subscription.products_category_wise_template"/>
+            <t t-snippet="recurring_subscription.recurring_subscription_credit_template"
+               t-thumbnail="/recurring_subscription/static/src/img/credit_money.svg"/>
         </xpath>
     </template>
 </odoo>
