@@ -14,5 +14,5 @@ class ProductVisibility(http.Controller):
             elif request.env.user.partner_id.allowed_type == 'category':
                 domain = [('categ_id', 'in', request.env.user.partner_id.
                            allowed_category_ids.ids)]
-        products = request.env['product.template'].sudo().search(domain).read()
+        products = request.env['product.template'].sudo().search(domain)
         return products

@@ -141,7 +141,6 @@ class RecurringSubscription(http.Controller):
             domain, ['subscription_id', 'partner_id', 'credit_amount',
                      'start_date', 'end_date', 'state', 'product_id',
                      'product_image'], order="create_date desc"))
-        print(len(credit_ids))
         currency = request.env.company.currency_id.symbol
         return credit_ids, currency
     

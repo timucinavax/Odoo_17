@@ -15,16 +15,11 @@
         'views/templates.xml'
     ],
     'installable': True,
-    'assets':{
-       'web.assets_frontend':[
+    'assets': {
+        'web.assets_frontend': [
             'product_visibility/static/src/js/product_visibility.js',
         ]
     },
     'application': False,
     'license': 'LGPL-3',
 }
-
-
-
-
-

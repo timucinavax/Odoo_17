@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-<!--    <template id="template_allowed_products" inherit_id="website_sale.products">-->
-<!--        <t t-name="product_visibility.template_allowed_products">-->
-<!--            -->
-<!--        </t>-->
-<!--    </template>-->
+    <template id="template_allowed_products" name="allowed products template" inherit_id="website_sale.products">
+    </template>
 </odoo>

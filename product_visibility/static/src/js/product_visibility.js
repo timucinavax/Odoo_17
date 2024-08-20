@@ -9,16 +9,24 @@ export const websiteSaleProducts = publicWidget.Widget.extend({
     willStart : async function () {
         this._super(...arguments)
         const values = await jsonrpc('/get_allowed_products', {})
-        const [ products ] = values
+//        console.log(values)
+        const { products } = values
+//        console.log(products)
         Object.assign(this, { products })
     },
     start: function () {
         this._super(...arguments)
         const refEl = this.$el.find('.products_grid')
-        const { products } = this
-        console.log(this.$el)
-        console.log(products)
-//        refEl.html(renderToElement('product_visibility.template_allowed_products', {
+//        console.log(this.$el.find('.products'))
+//        const { products } = this
+//        this.$el.find('.oe_product').hide()
+//        this.$el.find('.oe_product[data-product-id="'+47+'"]').show();
+//        this.values.forEach(function(product){
+//            console.log(el)
+//            console.log(product)
+//            this.$el.find('.oe_product[data-product-id="'+product.id+'"]').show();
+//        })
+//        refEl.html(renderToElement('website_sale.products', {
 //            products
 //        }));
     }
