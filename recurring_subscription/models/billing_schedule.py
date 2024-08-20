@@ -53,8 +53,7 @@ class BillingSchedule(models.Model):
         # compute credit amount based on billing schedule and state in confirm
         for rec in self:
             rec.credit_amount = sum(rec.credit_ids.search([
-                ('subscription_id.state',
-                 '=', 'confirm'),
+                ('subscription_id.state', '=', 'confirm'),
                 ('subscription_id.billing_schedule_id', '=', rec.id)]).mapped(
                 'credit_amount'))
 

@@ -108,7 +108,6 @@ class RecurringSubscription(models.Model):
             template.send_mail(self.id, force_send=True)
 
     def action_create_invoice(self):
-        print(self)
         # create an invoice for all subscriptions which in the confirmed state
         # and due date is less than today date
         for rec in self.search([]):

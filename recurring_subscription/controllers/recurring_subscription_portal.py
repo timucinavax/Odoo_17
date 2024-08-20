@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from odoo import http
 from odoo.exceptions import UserError
 from odoo.http import request
@@ -10,7 +11,6 @@ class RecurringSubscription(http.Controller):
                 website=True)
     def portal_my_rec_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
-        # print(request.env['res.users'].search([('id', '=', uid)]).partner_id)
         domain = []
         if request.env.user.has_group('base.group_portal'):
             # check whether logged user is portal user
@@ -60,7 +60,8 @@ class RecurringSubscription(http.Controller):
             "recurring_subscription.credit_data", values)
 
     @http.route(
-        '/rec-subscription/credit/<model("recurring.subscription.credit"):credit_id>',
+        '/rec-subscription/credit/<model("recurring.subscription.credit"):'
+        'credit_id>',
         type='http', auth="user", website=True)
     def credit_details(self, credit_id):
         """Detailed view of recurring subscription"""
@@ -87,7 +88,8 @@ class RecurringSubscription(http.Controller):
     def portal_create_rec_subscription(self, **post):
         """Create new subscription from portal"""
         record = {
-            'establishment': request.env['res.partner'].sudo().browse(int(post.get('partner_id'))).establishment,
+            'establishment': request.env['res.partner'].sudo().browse(
+                int(post.get('partner_id'))).establishment,
             'partner_id': int(post.get('partner_id')),
             'description': post.get('description'),
             'product_id': int(post.get('product_id')),
@@ -114,7 +116,8 @@ class RecurringSubscription(http.Controller):
         return request.redirect('/rec-subscription/credit')
 
     @http.route(
-        '/rec-subscription/billing-schedule/<model("recurring.subscription"):subscription_id>',
+        '/rec-subscription/billing-schedule/<model("recurring.subscription"):'
+        'subscription_id>',
         type='http',
         auth='user', website=True, csrf=False)
     def portal_run_billing_schedule(self, subscription_id):
@@ -125,6 +128,7 @@ class RecurringSubscription(http.Controller):
 
     @http.route('/last_four_credits', type='json', auth='public')
     def last_four_credits(self):
+        """Function to return last four credits record"""
         if request.env.user.has_group('base.group_portal'):
             domain = [('subscription_id.partner_id', '=',
                        request.env.user.partner_id.id)]
@@ -137,6 +141,7 @@ class RecurringSubscription(http.Controller):
             domain, ['subscription_id', 'partner_id', 'credit_amount',
                      'start_date', 'end_date', 'state', 'product_id',
                      'product_image'], order="create_date desc"))
+        print(len(credit_ids))
         currency = request.env.company.currency_id.symbol
         return credit_ids, currency
     

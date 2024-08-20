@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 from odoo import http
 from odoo.http import content_disposition, request
@@ -8,6 +9,7 @@ class XLSXReportController(http.Controller):
     @http.route('/xlsx_reports', type='http', auth='user', methods=['POST'],
                 csrf=False)
     def get_xlsx_report(self, model, options, output_format, report_name, is_partner):
+        """Function to return xlsx report data"""
         uid = request.session.uid
         report_obj = request.env[model].with_user(uid)
         options = json.loads(options)

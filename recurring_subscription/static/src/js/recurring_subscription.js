@@ -39,6 +39,7 @@ export function _chunk(array, size) {
 export const lastFourCredits = publicWidget.Widget.extend({
     selector: '.last_four_credit_snippet',
     willStart: async function () {
+        this._super(...arguments)
         const data = await jsonrpc('/last_four_credits', {})
         const [credits, currency] = data
         Object.assign(this, { credits, currency })

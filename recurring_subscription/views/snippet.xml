@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="recurring_subscription_credit_template" name="Recurring Subscription Credits">
-        <!--        Template Best seller product dynamic snippet-->
+        <!--        Template subscription credit dynamic snippet-->
         <t t-name="last_four_credit_template">
 
             <section class="last_four_credit_snippet">
