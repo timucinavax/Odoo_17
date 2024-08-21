@@ -1,33 +1,32 @@
 # -*- coding: utf-8 -*-
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from odoo import http
 from odoo.http import request
 
 
 class ProductVisibility(WebsiteSale):
-
-    def _shop_lookup_products(self, attrib_set, options, post, search, website):
-        res = super()._shop_lookup_products(attrib_set, options, post, search, website)
-        domain = []
-        if request.env.user.has_group('base.group_portal'):
-            if request.env.user.partner_id.allowed_type == 'product':
-                domain = [('id', 'in', request.env.user.partner_id.
-                           allowed_product_ids.ids)]
-            elif request.env.user.partner_id.allowed_type == 'category':
-                domain = [('public_categ_ids', 'in', request.env.user.partner_id.
-                           allowed_category_ids.ids)]
-        products = request.env['product.template'].sudo().search(domain)
-        res = list(res)
-        res[2] = products
-        return tuple(res)
-
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, **post):
-        res = super().shop(page, category, search, min_price, max_price, ppg, **post)
-        domain = []
+        """Override existing function to show only allowed product and
+         categories to customer on website"""
+        res = super().shop(
+            page, category, search, min_price, max_price, ppg, **post)
+        product_domain = []
+        cate_domain = []
         if request.env.user.has_group('base.group_portal'):
+            # check whether the logged user is a portal user
             if request.env.user.partner_id.allowed_type == 'category':
-                domain = [('id', 'in', request.env.user.partner_id.
-                           allowed_category_ids.ids)]
-        categories = request.env['product.public.category'].sudo().search(domain)
+                # check whether logged customer has allowed type category
+                cate_domain = [('id', 'in', request.env.user.partner_id.
+                                allowed_category_ids.ids)]
+                product_domain = [('public_categ_ids', 'in', request.env.user.
+                                   partner_id.allowed_category_ids.ids)]
+            elif request.env.user.partner_id.allowed_type == 'product':
+                # check whether logged customer has allowed type product
+                product_domain = [('id', 'in', request.env.user.partner_id.
+                                   allowed_product_ids.ids)]
+        products = request.env['product.template'].sudo().search(product_domain)
+        categories = request.env['product.public.category'].sudo().search(
+            cate_domain)
+        # return allowed products and categories
+        res.qcontext['products'] = products
         res.qcontext['categories'] = categories
         return res
