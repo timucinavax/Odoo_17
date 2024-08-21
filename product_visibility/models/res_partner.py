@@ -10,5 +10,5 @@ class ResPartner(models.Model):
                                     default='product')
     allowed_product_ids = fields.Many2many('product.template',
                                            string="Products")
-    allowed_category_ids = fields.Many2many('product.category',
+    allowed_category_ids = fields.Many2many('product.public.category',
                                             string="Categories")
