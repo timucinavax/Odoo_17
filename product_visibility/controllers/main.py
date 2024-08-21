@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from odoo.addons.website.controllers.main import Website
 from odoo import http
 from odoo.http import request
 
@@ -31,9 +30,4 @@ class ProductVisibility(WebsiteSale):
                            allowed_category_ids.ids)]
         categories = request.env['product.public.category'].sudo().search(domain)
         res.qcontext['categories'] = categories
-        return res
-class SearchProductVisibility(Website):
-    def autocomplete(self, search_type=None, term=None, order=None, limit=5, max_nb_chars=999, options=None):
-        res = super().autocomplete(search_type, term, order, limit, max_nb_chars, options)
-        print(res)
         return res
