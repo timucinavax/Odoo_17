@@ -11,6 +11,8 @@ class RecurringSubscription(http.Controller):
                 website=True)
     def portal_my_rec_subscription(self, **kwargs):
         """View recurring subscriptions of logged user"""
+        print(request.env.user)
+
         domain = []
         if request.env.user.has_group('base.group_portal'):
             # check whether logged user is portal user
