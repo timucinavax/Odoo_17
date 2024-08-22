@@ -24,8 +24,8 @@ export const WebsiteSubscription = publicWidget.Widget.extend({
         this._getProductPrice(product_id)
     },
     _getProductPrice: async function(productId) {
-       const price = await this.orm.read('product.product', [parseInt(productId)], ['list_price'])
-       this.$el.find('#recurring_amount').val(price[0]['list_price'])
+        const price = await this.orm.read('product.product', [parseInt(productId)], ['list_price'])
+        this.$el.find('#recurring_amount').val(price[0]['list_price'])
     }
     });
 publicWidget.registry.WebsiteSubscription = WebsiteSubscription

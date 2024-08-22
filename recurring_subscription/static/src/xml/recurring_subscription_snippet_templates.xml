@@ -41,13 +41,15 @@
                <a t-attf-href="#course_carousel" class="carousel-control-prev"
                   data-bs-slide="prev" role="button" aria-label="Previous"
                   title="Previous">
-                   <span class="fa fa-chevron-circle-left fa-2x" style="color: black"/>
+                   <span class="fa fa-chevron-circle-left fa-2x"
+                         style="color: black"/>
                    <span class="visually-hidden">Previous</span>
                </a>
                <a t-attf-href="#course_carousel" class="carousel-control-next"
                   data-bs-slide="next" role="button" aria-label="Next"
                   title="Next">
-                   <span class="fa fa-chevron-circle-right fa-2x" style="color: black"/>
+                   <span class="fa fa-chevron-circle-right fa-2x"
+                         style="color: black"/>
                    <span class="visually-hidden">Next</span>
                </a>
            </div>

@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 from odoo.addons.website_sale.controllers.main import WebsiteSale
+from odoo import http
 from odoo.http import request
 
 
 class ProductVisibility(WebsiteSale):
-    def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, **post):
+    @http.route()
+    def shop(self, page=0, category=None, search='', min_price=0.0,
+             max_price=0.0, ppg=False, **post):
         """Override existing function to show only allowed product and
-         categories to customer on website"""
+         categories to of logged customer on website"""
         res = super().shop(
             page, category, search, min_price, max_price, ppg, **post)
         product_domain = []
