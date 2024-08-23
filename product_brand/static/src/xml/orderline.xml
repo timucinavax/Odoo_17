@@ -4,7 +4,7 @@
     <t t-name="product_brand.brand_name" t-inherit="point_of_sale.Orderline" t-inherit-mode="extension" owl="1">
         <xpath expr="//ul[hasclass('info-list')]" position="before">
             <t t-if="line.brand_name">
-                <div class="badge badge-secondary" style="background-color: #a4a4a4;font-size:90%; color:#1c1c1c;">
+                <div class="badge badge-secondary" style="background-color: #a4a4a4;font-size:90%; color:#1c1c1c;padding:4px;">
                     <span t-esc="line.brand_name"/>
                 </div>
             </t>

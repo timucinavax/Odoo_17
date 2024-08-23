@@ -4,8 +4,8 @@
     <t t-name="product_brand.brand_name" t-inherit="point_of_sale.ProductCard"
        t-inherit-mode="extension">
         <xpath expr="//span[hasclass('price-tag')]" position="before">
-            <t t-if="env.services.pos.db.product_by_id[props.productId].brand_id[1]">
-                <div class="badge badge-secondary" style="background-color:  #bbbbbb;font-size:90%; color:#1c1c1c;">
+            <t t-if="env.services.pos.db.product_by_id[props.productId].brand_id">
+                <div class="badge badge-secondary" style="background-color:  #bbbbbb;font-size:90%; color:#1c1c1c;width: min-content">
                     <span t-esc="env.services.pos.db.product_by_id[props.productId].brand_id[1]"/>
                 </div>
             </t>
