@@ -48,7 +48,9 @@ export const lastFourCredits = publicWidget.Widget.extend({
         this._super(...arguments)
         const refEl = this.$el.find("#last_four_credits")
         refEl.empty()
+        console.log(this)
         const { credits, currency } = this
+        console.log(credits)
         var chunkData = _chunk(credits, 4)
         if (chunkData[0]) {
             chunkData[0].is_active = true
